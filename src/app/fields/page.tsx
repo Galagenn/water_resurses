@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Button, Stack, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/GridLegacy";
 import Link from "next/link";
 import FieldGrid from "@/components/fields/FieldGrid";
 import FieldDetailDrawer from "@/components/fields/FieldDetailDrawer";

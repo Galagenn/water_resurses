@@ -1,17 +1,7 @@
 'use client';
 
-import {
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Chip, List, ListItem, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import type { TrainingModule } from "@/types/dashboard";
 

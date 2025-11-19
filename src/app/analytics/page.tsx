@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Stack, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/GridLegacy";
 import DateRangePicker from "@/components/shared/DateRangePicker";
 import RegionSelector from "@/components/shared/RegionSelector";
 import IrrigationEfficiencyChart from "@/components/charts/IrrigationEfficiencyChart";

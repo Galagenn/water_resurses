@@ -1,7 +1,7 @@
 'use client';
 
 import { Stack, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/GridLegacy";
 import StatCard from "@/components/shared/StatCard";
 import DateRangePicker from "@/components/shared/DateRangePicker";
 import RegionSelector from "@/components/shared/RegionSelector";

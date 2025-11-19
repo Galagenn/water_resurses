@@ -1,6 +1,7 @@
 'use client';
 
-import { Card, CardContent, Chip, LinearProgress, Stack, Typography, Button, Grid } from "@mui/material";
+import { Button, Card, CardContent, Chip, LinearProgress, Stack, Typography } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
 import type { FieldSnapshot } from "@/types/dashboard";
 
 type Props = {
