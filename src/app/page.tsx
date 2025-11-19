@@ -1,66 +1,95 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
 
-export default function Home() {
+import { Stack, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import StatCard from "@/components/shared/StatCard";
+import DateRangePicker from "@/components/shared/DateRangePicker";
+import RegionSelector from "@/components/shared/RegionSelector";
+import WaterUsageChart from "@/components/charts/WaterUsageChart";
+import VegetationTrendChart from "@/components/charts/VegetationTrendChart";
+import CropYieldComparisonChart from "@/components/charts/CropYieldComparisonChart";
+import ForecastPanel from "@/components/shared/ForecastPanel";
+import AlertsList from "@/components/shared/AlertsList";
+import RegionPerformanceTable from "@/components/shared/RegionPerformanceTable";
+import NotificationsPanel from "@/components/shared/NotificationsPanel";
+import AnomalyMap from "@/components/maps/AnomalyMap";
+import {
+  summaryCards,
+  waterUsageSeries,
+  vegetationSeries,
+  cropYieldSeries,
+  forecastSummary,
+  alerts,
+  anomalyZones,
+  regions,
+  notificationFeed,
+} from "@/data/dashboard";
+import { regionPerformance } from "@/data/analytics";
+
+export default function DashboardPage() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <Stack spacing={3}>
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", md: "center" }}
+        spacing={2}
+      >
+        <Stack spacing={0.5}>
+          <Typography variant="subtitle2" color="text.secondary">
+            Интерактивный мониторинг
+          </Typography>
+          <Typography variant="h4">Дашборд ИИ-агента</Typography>
+        </Stack>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ xs: "stretch", sm: "flex-end" }}>
+          <DateRangePicker />
+          <RegionSelector regions={regions} />
+        </Stack>
+      </Stack>
+
+      <Grid container spacing={2}>
+        {summaryCards.map((card) => (
+          <Grid key={card.id} item xs={12} sm={6} lg={3}>
+            <StatCard card={card} />
+          </Grid>
+        ))}
+      </Grid>
+
+      <Grid container spacing={2}>
+        <Grid item xs={12} lg={6}>
+          <WaterUsageChart data={waterUsageSeries} />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <VegetationTrendChart data={vegetationSeries} />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2}>
+        <Grid item xs={12} lg={5}>
+          <CropYieldComparisonChart data={cropYieldSeries} />
+        </Grid>
+        <Grid item xs={12} lg={7}>
+          <AnomalyMap zones={anomalyZones} />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2}>
+        <Grid item xs={12} lg={5}>
+          <ForecastPanel items={forecastSummary} />
+        </Grid>
+        <Grid item xs={12} lg={7}>
+          <AlertsList alerts={alerts} />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2}>
+        <Grid item xs={12} lg={7}>
+          <RegionPerformanceTable rows={regionPerformance} />
+        </Grid>
+        <Grid item xs={12} lg={5}>
+          <NotificationsPanel feed={notificationFeed} />
+        </Grid>
+      </Grid>
+    </Stack>
   );
 }

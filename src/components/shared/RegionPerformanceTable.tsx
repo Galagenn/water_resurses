@@ -1,0 +1,69 @@
+'use client';
+
+import {
+  Card,
+  CardContent,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+  Chip,
+} from "@mui/material";
+import type { RegionPerformanceRow } from "@/types/dashboard";
+
+type Props = {
+  rows: RegionPerformanceRow[];
+};
+
+const riskColor: Record<RegionPerformanceRow["riskLevel"], string> = {
+  low: "#22c55e",
+  medium: "#f97316",
+  high: "#ef4444",
+};
+
+const RegionPerformanceTable = ({ rows }: Props) => (
+  <Card>
+    <CardContent>
+      <Typography variant="h6" gutterBottom>
+        Эффективность по регионам
+      </Typography>
+      <Table size="small" sx={{ "& td, & th": { borderColor: "rgba(148,163,184,0.2)" } }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Регион</TableCell>
+            <TableCell>Индекс роста</TableCell>
+            <TableCell>Урожайность</TableCell>
+            <TableCell>Риск</TableCell>
+            <TableCell>Рекомендация</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={row.region} hover>
+              <TableCell>{row.region}</TableCell>
+              <TableCell>{row.growthIndex}</TableCell>
+              <TableCell>{row.yield}</TableCell>
+              <TableCell>
+                <Chip
+                  size="small"
+                  label={row.riskLabel}
+                  sx={{
+                    backgroundColor: "rgba(148,163,184,0.08)",
+                    color: riskColor[row.riskLevel],
+                    border: `1px solid ${riskColor[row.riskLevel]}`,
+                  }}
+                />
+              </TableCell>
+              <TableCell>{row.recommendation}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </CardContent>
+  </Card>
+);
+
+export default RegionPerformanceTable;
+
