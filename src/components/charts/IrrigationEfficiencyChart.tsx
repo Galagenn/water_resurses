@@ -20,7 +20,7 @@ type Props = {
 
 const IrrigationEfficiencyChart = ({ data }: Props) => (
   <Card sx={{ height: "100%" }}>
-    <CardContent sx={{ height: 380 }}>
+    <CardContent sx={{ height: { xs: 280, sm: 320, md: 380 } }}>
       <Typography variant="h6" mb={2}>
         Эффективность орошения
       </Typography>

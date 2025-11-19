@@ -19,9 +19,13 @@ const DateRangePicker = () => {
         onChange={(_, val) => val && setValue(val)}
         size="small"
         sx={{
+          flexWrap: "wrap",
+          gap: 1,
           "& .MuiToggleButton-root": {
             borderColor: "rgba(148,163,184,0.3)",
             borderRadius: 2,
+            flex: { xs: "1 1 calc(50% - 8px)", sm: "0 0 auto" },
+            minHeight: 44,
           },
         }}
       >

@@ -36,10 +36,12 @@ const AlertsList = ({ alerts }: AlertsListProps) => (
         {alerts.map((alert) => (
           <ListItem
             key={alert.id}
+            alignItems="flex-start"
             sx={{
               mb: 1,
               borderRadius: 2,
               border: "1px solid rgba(148,163,184,0.2)",
+              gap: 1,
             }}
             secondaryAction={
               <IconButton edge="end" aria-label="Открыть поле">
@@ -54,7 +56,11 @@ const AlertsList = ({ alerts }: AlertsListProps) => (
             </ListItemAvatar>
             <ListItemText
               primary={
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={1}
+                  alignItems={{ xs: "flex-start", sm: "center" }}
+                >
                   <Typography variant="subtitle1">{alert.fieldName}</Typography>
                   <Chip
                     label={alert.severityLabel}
@@ -69,10 +75,20 @@ const AlertsList = ({ alerts }: AlertsListProps) => (
               }
               secondary={
                 <>
-                  <Typography component="div" variant="body2" color="text.secondary">
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ display: "block" }}
+                  >
                     {alert.message}
                   </Typography>
-                  <Typography component="div" variant="caption" color="text.secondary">
+                  <Typography
+                    component="span"
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ display: "block" }}
+                  >
                     {alert.timestamp}
                   </Typography>
                 </>

@@ -10,7 +10,7 @@ type Props = {
 
 const CropYieldComparisonChart = ({ data }: Props) => (
   <Card sx={{ height: "100%" }}>
-    <CardContent sx={{ height: 360 }}>
+    <CardContent sx={{ height: { xs: 280, sm: 320, md: 360 } }}>
       <Typography variant="h6" mb={2}>
         Сравнение урожайности (ц/га)
       </Typography>

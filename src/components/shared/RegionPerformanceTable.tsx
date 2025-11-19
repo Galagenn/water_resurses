@@ -6,6 +6,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -29,38 +30,43 @@ const RegionPerformanceTable = ({ rows }: Props) => (
       <Typography variant="h6" gutterBottom>
         Эффективность по регионам
       </Typography>
-      <Table size="small" sx={{ "& td, & th": { borderColor: "rgba(148,163,184,0.2)" } }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Регион</TableCell>
-            <TableCell>Индекс роста</TableCell>
-            <TableCell>Урожайность</TableCell>
-            <TableCell>Риск</TableCell>
-            <TableCell>Рекомендация</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.region} hover>
-              <TableCell>{row.region}</TableCell>
-              <TableCell>{row.growthIndex}</TableCell>
-              <TableCell>{row.yield}</TableCell>
-              <TableCell>
-                <Chip
-                  size="small"
-                  label={row.riskLabel}
-                  sx={{
-                    backgroundColor: "rgba(148,163,184,0.08)",
-                    color: riskColor[row.riskLevel],
-                    border: `1px solid ${riskColor[row.riskLevel]}`,
-                  }}
-                />
-              </TableCell>
-              <TableCell>{row.recommendation}</TableCell>
+      <TableContainer sx={{ overflowX: "auto" }}>
+        <Table
+          size="small"
+          sx={{ minWidth: 560, "& td, & th": { borderColor: "rgba(148,163,184,0.2)" } }}
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell>Регион</TableCell>
+              <TableCell>Индекс роста</TableCell>
+              <TableCell>Урожайность</TableCell>
+              <TableCell>Риск</TableCell>
+              <TableCell>Рекомендация</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow key={row.region} hover>
+                <TableCell>{row.region}</TableCell>
+                <TableCell>{row.growthIndex}</TableCell>
+                <TableCell>{row.yield}</TableCell>
+                <TableCell>
+                  <Chip
+                    size="small"
+                    label={row.riskLabel}
+                    sx={{
+                      backgroundColor: "rgba(148,163,184,0.08)",
+                      color: riskColor[row.riskLevel],
+                      border: `1px solid ${riskColor[row.riskLevel]}`,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>{row.recommendation}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </CardContent>
   </Card>
 );

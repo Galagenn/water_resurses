@@ -10,14 +10,19 @@ type Props = {
 
 const FieldDetailView = ({ field }: Props) => (
   <Stack spacing={3}>
-    <Stack direction="row" justifyContent="space-between" alignItems="center">
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      justifyContent="space-between"
+      alignItems={{ xs: "flex-start", sm: "center" }}
+      spacing={1.5}
+    >
       <Stack spacing={0.5}>
         <Typography variant="subtitle2" color="text.secondary">
           Детальная карточка
         </Typography>
         <Typography variant="h4">{field.name}</Typography>
       </Stack>
-      <Button component={Link} href="/fields" variant="outlined">
+      <Button component={Link} href="/fields" variant="outlined" sx={{ alignSelf: { xs: "stretch", sm: "auto" } }}>
         Назад к списку
       </Button>
     </Stack>

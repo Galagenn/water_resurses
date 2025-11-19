@@ -17,7 +17,12 @@ const ForecastPanel = ({ items }: ForecastPanelProps) => (
   <Card sx={{ height: "100%" }}>
     <CardContent>
       <Stack spacing={2}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          justifyContent="space-between"
+          alignItems={{ xs: "flex-start", sm: "center" }}
+          spacing={1.5}
+        >
           <Typography variant="h6">AI-прогноз по регионам</Typography>
           <Chip size="small" label="Обновлено 15 мин назад" color="primary" variant="outlined" />
         </Stack>
@@ -31,7 +36,12 @@ const ForecastPanel = ({ items }: ForecastPanelProps) => (
               p: 1.5,
             }}
           >
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              justifyContent="space-between"
+              alignItems={{ xs: "flex-start", sm: "center" }}
+              spacing={1}
+            >
               <Typography variant="subtitle1">{item.region}</Typography>
               <Chip
                 label={`${item.riskLabel} • ${item.riskProbability}%`}

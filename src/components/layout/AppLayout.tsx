@@ -110,7 +110,13 @@ const AppLayout = ({ children }: PropsWithChildren) => {
             </IconButton>
             <Typography variant="h6">AgroSense AI</Typography>
           </Stack>
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            flexWrap="wrap"
+            justifyContent="flex-end"
+          >
             <Tooltip title="Оповещения">
               <IconButton color="inherit">
                 <Badge color="error" badgeContent={4}>
@@ -159,8 +165,8 @@ const AppLayout = ({ children }: PropsWithChildren) => {
         sx={{
           flexGrow: 1,
           width: { md: `calc(100% - ${drawerWidth}px)` },
-          px: { xs: 2, md: 4 },
-          py: { xs: 10, md: 6 },
+          px: { xs: 1.5, sm: 2.5, md: 4 },
+          py: { xs: 8, md: 6 },
         }}
       >
         <Toolbar sx={{ display: { xs: "block", md: "none" } }} />

@@ -18,7 +18,7 @@ type Props = {
 
 const WaterUsageChart = ({ data }: Props) => (
   <Card sx={{ height: "100%" }}>
-    <CardContent sx={{ height: 360 }}>
+    <CardContent sx={{ height: { xs: 260, sm: 300, md: 360 } }}>
       <Typography variant="h6" mb={2}>
         Потребление воды (млн м³)
       </Typography>

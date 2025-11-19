@@ -1,7 +1,6 @@
 'use client';
 
-import { Button, Stack, Typography } from "@mui/material";
-import Grid from "@mui/material/GridLegacy";
+import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import DateRangePicker from "@/components/shared/DateRangePicker";
 import RegionSelector from "@/components/shared/RegionSelector";
 import IrrigationEfficiencyChart from "@/components/charts/IrrigationEfficiencyChart";
@@ -12,44 +11,58 @@ import { irrigationEfficiency, seasonalTrends, regionPerformance } from "@/data/
 import { notificationFeed, regions } from "@/data/dashboard";
 
 const AnalyticsPage = () => (
-  <Stack spacing={3}>
-    <Stack
-      direction={{ xs: "column", md: "row" }}
-      justifyContent="space-between"
-      alignItems={{ xs: "flex-start", md: "center" }}
-      spacing={2}
-    >
-      <Stack spacing={0.5}>
-        <Typography variant="subtitle2" color="text.secondary">
-          Детальная аналитика
-        </Typography>
-        <Typography variant="h4">Сценарии орошения и вегетации</Typography>
+  <Container maxWidth="lg" sx={{ px: { xs: 1.25, sm: 2.5, md: 0 } }}>
+    <Stack spacing={{ xs: 3, md: 4 }}>
+      <Stack
+        direction={{ xs: "column", lg: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", lg: "center" }}
+        spacing={{ xs: 2, lg: 3 }}
+      >
+        <Stack spacing={0.5}>
+          <Typography variant="subtitle2" color="text.secondary">
+            Детальная аналитика
+          </Typography>
+          <Typography variant="h4">Сценарии орошения и вегетации</Typography>
+        </Stack>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          alignItems={{ xs: "stretch", sm: "flex-end" }}
+          width="100%"
+          maxWidth={{ xs: "100%", lg: 540 }}
+        >
+          <DateRangePicker />
+          <RegionSelector regions={regions} />
+          <Button variant="contained" sx={{ minHeight: 44 }}>
+            Экспорт CSV
+          </Button>
+        </Stack>
       </Stack>
-      <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ xs: "stretch", sm: "flex-end" }}>
-        <DateRangePicker />
-        <RegionSelector regions={regions} />
-        <Button variant="contained">Экспорт CSV</Button>
-      </Stack>
-    </Stack>
 
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={6}>
+      <Box
+        sx={{
+          display: "grid",
+          gap: { xs: 2.5, md: 3 },
+          gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
+        }}
+      >
         <IrrigationEfficiencyChart data={irrigationEfficiency} />
-      </Grid>
-      <Grid item xs={12} lg={6}>
         <SeasonalTrendsChart data={seasonalTrends} />
-      </Grid>
-    </Grid>
+      </Box>
 
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={7}>
+      <Box
+        sx={{
+          display: "grid",
+          gap: { xs: 2.5, md: 3 },
+          gridTemplateColumns: { xs: "1fr", md: "minmax(0, 3fr) minmax(0, 2fr)" },
+        }}
+      >
         <RegionPerformanceTable rows={regionPerformance} />
-      </Grid>
-      <Grid item xs={12} lg={5}>
         <NotificationsPanel feed={notificationFeed} />
-      </Grid>
-    </Grid>
-  </Stack>
+      </Box>
+    </Stack>
+  </Container>
 );
 
 export default AnalyticsPage;

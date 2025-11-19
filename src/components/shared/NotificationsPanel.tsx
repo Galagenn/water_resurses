@@ -11,9 +11,18 @@ const NotificationsPanel = ({ feed }: Props) => (
   <Card>
     <CardContent>
       <Stack spacing={2}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          justifyContent="space-between"
+          alignItems={{ xs: "stretch", sm: "center" }}
+          spacing={1}
+        >
           <Typography variant="h6">Служебные уведомления</Typography>
-          <Button size="small" variant="outlined">
+          <Button
+            size="small"
+            variant="outlined"
+            sx={{ alignSelf: { xs: "stretch", sm: "auto" } }}
+          >
             Архив
           </Button>
         </Stack>
@@ -27,7 +36,12 @@ const NotificationsPanel = ({ feed }: Props) => (
               p: 1.5,
             }}
           >
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              justifyContent="space-between"
+              alignItems={{ xs: "flex-start", sm: "center" }}
+              spacing={0.5}
+            >
               <Typography variant="subtitle1">{item.title}</Typography>
               <Typography variant="caption" color="text.secondary">
                 {item.timestamp}
