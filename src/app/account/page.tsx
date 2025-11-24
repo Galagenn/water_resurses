@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import Grid from "@mui/material/GridLegacy";
 import {
   Avatar,
   Button,
@@ -10,7 +11,6 @@ import {
   Chip,
   Container,
   Divider,
-  Grid,
   List,
   ListItem,
   ListItemText,

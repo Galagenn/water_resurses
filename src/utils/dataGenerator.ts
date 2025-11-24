@@ -100,8 +100,8 @@ export const generateSummaryCards = (days: number): DashboardSummaryCard[] => {
   // Базовые значения, которые изменяются в зависимости от периода
   const waterBase = 18.4;
   const waterChange = days <= 7 ? -2.1 : days <= 14 ? -3.2 : days <= 30 ? -4.2 : -5.5;
-  const waterValue = (waterBase * (days / 30)).toFixed(1);
-  const waterChangeValue = (waterBase * (days / 30) * (waterChange / 100)).toFixed(1);
+  const waterValue = waterBase * (days / 30);
+  const waterChangeValue = waterBase * (days / 30) * (waterChange / 100);
   
   const coverageBase = 92;
   const coverageChange = days <= 7 ? 1.5 : days <= 14 ? 2.3 : days <= 30 ? 3.1 : 4.2;
@@ -118,11 +118,11 @@ export const generateSummaryCards = (days: number): DashboardSummaryCard[] => {
     {
       id: "water",
       label: "Использование воды",
-      value: `${waterValue} млн м³`,
+      value: `${waterValue.toFixed(1)} млн м³`,
       change: waterChange,
       emphasis: "positive",
       icon: "💧",
-      footer: `${waterChangeValue > 0 ? '+' : ''}${Math.abs(parseFloat(waterChangeValue)).toFixed(1)} млн м³ к прошлому периоду`,
+      footer: `${waterChangeValue > 0 ? "+" : ""}${Math.abs(waterChangeValue).toFixed(1)} млн м³ к прошлому периоду`,
     },
     {
       id: "coverage",
