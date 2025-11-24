@@ -16,7 +16,7 @@ const FieldsPage = () => {
   );
 
   return (
-    <Container maxWidth="lg" sx={{ px: { xs: 1.25, sm: 2.5, md: 0 } }}>
+    <Container maxWidth={false} sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5, md: 0 } }}>
       <Stack spacing={{ xs: 3, md: 4 }}>
         <Stack
           direction={{ xs: "column", lg: "row" }}
@@ -31,9 +31,7 @@ const FieldsPage = () => {
             <Typography variant="h4">Мониторинг сельхозугодий</Typography>
           </Stack>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} width="100%" maxWidth={360}>
-            <Button component={Link} href="/analytics" variant="outlined" fullWidth>
-              Аналитика
-            </Button>
+
             <Button variant="contained" fullWidth>
               Добавить поле
             </Button>
@@ -49,7 +47,6 @@ const FieldsPage = () => {
             gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
           }}
         >
-          <AlertsList alerts={alerts.slice(0, 3)} />
           <Stack spacing={1.5}>
             <Typography variant="h6">План действий</Typography>
             {[

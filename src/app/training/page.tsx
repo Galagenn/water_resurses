@@ -5,7 +5,7 @@ import TrainingModulesList from "@/components/training/TrainingModulesList";
 import { trainingModules } from "@/data/training";
 
 const TrainingPage = () => (
-  <Container maxWidth="lg" sx={{ px: { xs: 1.25, sm: 2.5, md: 0 } }}>
+  <Container maxWidth={false} sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5, md: 0 } }}>
     <Stack spacing={{ xs: 3, md: 4 }}>
       <Stack
         direction={{ xs: "column", lg: "row" }}

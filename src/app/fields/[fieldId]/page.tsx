@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Container } from "@mui/material";
 import FieldDetailView from "@/components/fields/FieldDetailView";
 import { fieldsSnapshot } from "@/data/dashboard";
 
@@ -14,7 +15,11 @@ const FieldDetailPage = async ({ params }: Props) => {
     notFound();
   }
 
-  return <FieldDetailView field={field} />;
+  return (
+    <Container maxWidth={false} sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5, md: 0 } }}>
+      <FieldDetailView field={field} />
+    </Container>
+  );
 };
 
 export default FieldDetailPage;

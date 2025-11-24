@@ -18,7 +18,7 @@ const SettingsPage = () => {
   const [enableAlerts, setEnableAlerts] = useState(true);
 
   return (
-    <Container maxWidth="md" sx={{ px: { xs: 1.25, sm: 2.5 } }}>
+    <Container maxWidth={false} sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5 } }}>
       <Stack spacing={{ xs: 3, md: 4 }}>
         <Stack spacing={0.5}>
           <Typography variant="subtitle2" color="text.secondary">

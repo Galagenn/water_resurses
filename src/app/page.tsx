@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useMemo } from "react";
 import { Box, Container, Stack, Typography, useMediaQuery } from "@mui/material";
 import StatCard from "@/components/shared/StatCard";
 import DateRangePicker from "@/components/shared/DateRangePicker";
@@ -13,28 +14,42 @@ import RegionPerformanceTable from "@/components/shared/RegionPerformanceTable";
 import NotificationsPanel from "@/components/shared/NotificationsPanel";
 import AnomalyMap from "@/components/maps/AnomalyMap";
 import {
-  summaryCards,
-  waterUsageSeries,
-  vegetationSeries,
-  cropYieldSeries,
-  forecastSummary,
   alerts,
   anomalyZones,
   regions,
   notificationFeed,
 } from "@/data/dashboard";
 import { regionPerformance } from "@/data/analytics";
+import {
+  generateSummaryCards,
+  generateWaterUsageData,
+  generateVegetationData,
+  generateCropYieldData,
+  generateForecastData,
+  filterAlertsByPeriod,
+  filterAnomaliesByPeriod,
+} from "@/utils/dataGenerator";
 
 export default function DashboardPage() {
   const isCompact = useMediaQuery("(max-width:708px)");
   const containerPadding = isCompact ? 1.25 : 2;
   const sectionGap = { xs: 2.5, md: 3 };
+  const [selectedPeriod, setSelectedPeriod] = useState(30);
+
+  const summaryCards = useMemo(() => generateSummaryCards(selectedPeriod), [selectedPeriod]);
+  const waterUsageSeries = useMemo(() => generateWaterUsageData(selectedPeriod), [selectedPeriod]);
+  const vegetationSeries = useMemo(() => generateVegetationData(selectedPeriod), [selectedPeriod]);
+  const cropYieldSeries = useMemo(() => generateCropYieldData(selectedPeriod), [selectedPeriod]);
+  const forecastSummary = useMemo(() => generateForecastData(selectedPeriod), [selectedPeriod]);
+  const filteredAlerts = useMemo(() => filterAlertsByPeriod(alerts, selectedPeriod), [selectedPeriod]);
+  const filteredAnomalies = useMemo(() => filterAnomaliesByPeriod(anomalyZones, selectedPeriod), [selectedPeriod]);
 
   return (
     <Container
-      maxWidth="lg"
+      maxWidth={false}
       sx={{
         width: "100%",
+        maxWidth: 1440,
         px: { xs: containerPadding, sm: 2.5, md: 0 },
       }}
     >
@@ -59,7 +74,7 @@ export default function DashboardPage() {
           <Box
             sx={{
               width: "100%",
-              borderRadius: 3,
+              borderRadius: 2,
               border: "1px solid rgba(148,163,184,0.2)",
               bgcolor: "rgba(15,23,42,0.75)",
               p: { xs: 2, sm: 2.5 },
@@ -72,7 +87,10 @@ export default function DashboardPage() {
               alignItems={{ xs: "stretch", sm: "flex-end" }}
             >
               <Box sx={{ flex: 1 }}>
-                <DateRangePicker />
+                <DateRangePicker 
+                  defaultPeriod={selectedPeriod}
+                  onPeriodChange={setSelectedPeriod}
+                />
               </Box>
               <Box sx={{ flex: 1 }}>
                 <RegionSelector regions={regions} />
@@ -99,41 +117,20 @@ export default function DashboardPage() {
           ))}
         </Box>
 
-        <Box
-          sx={{
-            display: "grid",
-            gap: sectionGap,
-            gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
-          }}
-        >
-          <Box sx={{ minWidth: 0 }}>
-            <WaterUsageChart data={waterUsageSeries} />
-          </Box>
-          <Box sx={{ minWidth: 0 }}>
-            <VegetationTrendChart data={vegetationSeries} />
-          </Box>
+        <Box sx={{ minWidth: 0 }}>
+          <WaterUsageChart data={waterUsageSeries} />
         </Box>
 
-        <Box
-          sx={{
-            display: "grid",
-            gap: sectionGap,
-            gridTemplateColumns: {
-              xs: "1fr",
-              lg: "minmax(0, 5fr) minmax(0, 7fr)",
-            },
-            gridTemplateAreas: {
-              xs: `"map" "chart"`,
-              lg: `"chart map"`,
-            },
-          }}
-        >
-          <Box sx={{ gridArea: "map", minWidth: 0 }}>
-            <AnomalyMap zones={anomalyZones} />
-          </Box>
-          <Box sx={{ gridArea: "chart", minWidth: 0 }}>
-            <CropYieldComparisonChart data={cropYieldSeries} />
-          </Box>
+        <Box sx={{ minWidth: 0 }}>
+          <VegetationTrendChart data={vegetationSeries} />
+        </Box>
+
+        <Box sx={{ minWidth: 0 }}>
+          <AnomalyMap zones={filteredAnomalies} />
+        </Box>
+
+        <Box sx={{ minWidth: 0 }}>
+          <CropYieldComparisonChart data={cropYieldSeries} />
         </Box>
 
         <Box
@@ -147,7 +144,7 @@ export default function DashboardPage() {
             <ForecastPanel items={forecastSummary} />
           </Box>
           <Box sx={{ minWidth: 0 }}>
-            <AlertsList alerts={alerts} />
+            <AlertsList alerts={filteredAlerts} />
           </Box>
         </Box>
 
@@ -155,14 +152,11 @@ export default function DashboardPage() {
           sx={{
             display: "grid",
             gap: sectionGap,
-            gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
+            gridTemplateColumns: "1fr",
           }}
         >
           <Box sx={{ minWidth: 0 }}>
             <RegionPerformanceTable rows={regionPerformance} />
-          </Box>
-          <Box sx={{ minWidth: 0 }}>
-            <NotificationsPanel feed={notificationFeed} />
           </Box>
         </Box>
       </Stack>

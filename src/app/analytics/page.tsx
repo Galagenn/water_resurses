@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useMemo } from "react";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import DateRangePicker from "@/components/shared/DateRangePicker";
 import RegionSelector from "@/components/shared/RegionSelector";
@@ -7,11 +8,26 @@ import IrrigationEfficiencyChart from "@/components/charts/IrrigationEfficiencyC
 import SeasonalTrendsChart from "@/components/charts/SeasonalTrendsChart";
 import RegionPerformanceTable from "@/components/shared/RegionPerformanceTable";
 import NotificationsPanel from "@/components/shared/NotificationsPanel";
-import { irrigationEfficiency, seasonalTrends, regionPerformance } from "@/data/analytics";
+import { regionPerformance as regionPerformanceBase } from "@/data/analytics";
 import { notificationFeed, regions } from "@/data/dashboard";
+import {
+  generateIrrigationEfficiencyData,
+  generateSeasonalTrendsData,
+  generateRegionPerformanceData,
+} from "@/utils/dataGenerator";
 
-const AnalyticsPage = () => (
-  <Container maxWidth="lg" sx={{ px: { xs: 1.25, sm: 2.5, md: 0 } }}>
+const AnalyticsPage = () => {
+  const [selectedPeriod, setSelectedPeriod] = useState(30);
+
+  const irrigationEfficiency = useMemo(() => generateIrrigationEfficiencyData(selectedPeriod), [selectedPeriod]);
+  const seasonalTrends = useMemo(() => generateSeasonalTrendsData(selectedPeriod), [selectedPeriod]);
+  const regionPerformance = useMemo(
+    () => generateRegionPerformanceData(regionPerformanceBase, selectedPeriod),
+    [selectedPeriod]
+  );
+
+  return (
+  <Container maxWidth={false} sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5, md: 0 } }}>
     <Stack spacing={{ xs: 3, md: 4 }}>
       <Stack
         direction={{ xs: "column", lg: "row" }}
@@ -32,7 +48,10 @@ const AnalyticsPage = () => (
           width="100%"
           maxWidth={{ xs: "100%", lg: 540 }}
         >
-          <DateRangePicker />
+          <DateRangePicker 
+            defaultPeriod={selectedPeriod}
+            onPeriodChange={setSelectedPeriod}
+          />
           <RegionSelector regions={regions} />
           <Button variant="contained" sx={{ minHeight: 44 }}>
             Экспорт CSV
@@ -40,30 +59,23 @@ const AnalyticsPage = () => (
         </Stack>
       </Stack>
 
-      <Box
-        sx={{
-          display: "grid",
-          gap: { xs: 2.5, md: 3 },
-          gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
-        }}
-      >
+      <Stack spacing={{ xs: 2.5, md: 3 }}>
         <IrrigationEfficiencyChart data={irrigationEfficiency} />
         <SeasonalTrendsChart data={seasonalTrends} />
-      </Box>
+      </Stack>
 
       <Box
         sx={{
           display: "grid",
           gap: { xs: 2.5, md: 3 },
-          gridTemplateColumns: { xs: "1fr", md: "minmax(0, 3fr) minmax(0, 2fr)" },
+          gridTemplateColumns: "1fr",
         }}
       >
         <RegionPerformanceTable rows={regionPerformance} />
-        <NotificationsPanel feed={notificationFeed} />
       </Box>
     </Stack>
   </Container>
-);
+  );
+};
 
 export default AnalyticsPage;
-

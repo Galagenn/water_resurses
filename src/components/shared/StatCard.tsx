@@ -17,7 +17,7 @@ const StatCard = ({ card }: StatCardProps) => (
   <Card
     sx={{
       height: "100%",
-      borderRadius: 3,
+      borderRadius: 1.5,
       border: "1px solid rgba(148,163,184,0.15)",
       background: "linear-gradient(135deg, rgba(15,23,42,0.9), rgba(15,23,42,0.7))",
     }}
