@@ -43,7 +43,10 @@ export default function DashboardPage() {
     setSelectedRegions(ids.filter((id): id is RegionKey => REGION_KEYS.includes(id as RegionKey)));
   }, []);
 
-  const summaryCards = useMemo(() => generateSummaryCards(selectedPeriod), [selectedPeriod]);
+  const summaryCards = useMemo(
+    () => generateSummaryCards(selectedPeriod, selectedRegions),
+    [selectedPeriod, selectedRegions]
+  );
   const waterUsageSeries = useMemo(() => generateWaterUsageData(selectedPeriod), [selectedPeriod]);
   const vegetationSeries = useMemo(() => generateVegetationData(selectedPeriod), [selectedPeriod]);
   const cropYieldSeries = useMemo(() => generateCropYieldData(selectedPeriod), [selectedPeriod]);

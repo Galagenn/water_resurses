@@ -9,6 +9,7 @@ import type {
   RegionVegetationPoint,
   FieldSnapshot,
   NotificationItem,
+  RegionKey,
 } from "@/types/dashboard";
 
 export const summaryCards: DashboardSummaryCard[] = [
@@ -49,6 +50,65 @@ export const summaryCards: DashboardSummaryCard[] = [
     footer: "5 критических аномалий требуют внимания",
   },
 ];
+
+type RegionSummaryStat = {
+  water: number;
+  waterChange: number;
+  coverage: number;
+  coverageChange: number;
+  yield: number;
+  yieldChange: number;
+  alerts: number;
+  alertsChange: number;
+  criticalAlerts: number;
+};
+
+export const regionSummaryStats: Record<RegionKey, RegionSummaryStat> = {
+  almaty: {
+    water: 5.3,
+    waterChange: -3.4,
+    coverage: 95,
+    coverageChange: 3.6,
+    yield: 44.5,
+    yieldChange: 2.1,
+    alerts: 4,
+    alertsChange: 6.4,
+    criticalAlerts: 2,
+  },
+  zhambyl: {
+    water: 4.7,
+    waterChange: -2.8,
+    coverage: 90,
+    coverageChange: 2.4,
+    yield: 39.2,
+    yieldChange: 1.0,
+    alerts: 3,
+    alertsChange: 5.2,
+    criticalAlerts: 1,
+  },
+  turkestan: {
+    water: 5.9,
+    waterChange: -4.1,
+    coverage: 88,
+    coverageChange: 1.7,
+    yield: 47.3,
+    yieldChange: 2.7,
+    alerts: 2,
+    alertsChange: 4.1,
+    criticalAlerts: 1,
+  },
+  aktobe: {
+    water: 3.8,
+    waterChange: -1.9,
+    coverage: 93,
+    coverageChange: 3.1,
+    yield: 36.5,
+    yieldChange: 0.8,
+    alerts: 3,
+    alertsChange: 3.6,
+    criticalAlerts: 1,
+  },
+};
 
 export const waterUsageSeries: RegionSeriesPoint[] = [
   { period: "Нед 01", almaty: 3.4, zhambyl: 2.9, turkestan: 3.1, aktobe: 2.6 },

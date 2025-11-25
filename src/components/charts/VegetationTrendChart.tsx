@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment } from "react";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
 import {
   CartesianGrid,
   Legend,
@@ -21,6 +21,8 @@ type Props = {
 };
 
 const VegetationTrendChart = ({ data, visibleRegions }: Props) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const activeRegions = visibleRegions ?? REGION_KEYS;
 
   return (
@@ -31,7 +33,14 @@ const VegetationTrendChart = ({ data, visibleRegions }: Props) => {
         border: "1px solid rgba(148,163,184,0.25)",
       }}
     >
-      <CardContent sx={{ height: { xs: 280, sm: 320, md: 360 }, display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <CardContent
+        sx={{
+          height: { xs: 340, sm: 360, md: 380 },
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.5,
+        }}
+      >
         <Typography variant="h6">Индексы вегетации (NDVI / EVI)</Typography>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 20 }}>
@@ -47,6 +56,7 @@ const VegetationTrendChart = ({ data, visibleRegions }: Props) => {
               label={{ value: "Индекс", angle: -90, position: "insideLeft", fill: "#cbd5f5" }}
             />
             <Tooltip
+              wrapperStyle={{ zIndex: 2000 }}
               contentStyle={{ backgroundColor: "#0f172a", borderColor: "rgba(148,163,184,0.4)", color: "#f8fafc" }}
               labelStyle={{ color: "#e2e8f0" }}
               formatter={(value: number | string, key) => {
@@ -60,7 +70,7 @@ const VegetationTrendChart = ({ data, visibleRegions }: Props) => {
                 return [`${numericValue.toFixed(2)} (${metric})`, regionLabel];
               }}
             />
-            <Legend wrapperStyle={{ paddingTop: 8 }} />
+            {!isMobile && <Legend wrapperStyle={{ paddingTop: 8 }} />}
 
             {activeRegions.map((key) => (
               <Fragment key={key}>
@@ -85,9 +95,30 @@ const VegetationTrendChart = ({ data, visibleRegions }: Props) => {
             ))}
           </LineChart>
         </ResponsiveContainer>
-        <Typography variant="caption" color="text.secondary">
-          Сплошная линия — NDVI, пунктир — EVI
-        </Typography>
+        <Stack spacing={0.75} mt={0.5}>
+          <Typography variant="caption" color="text.secondary">
+            Сплошная линия — NDVI, пунктир — EVI
+          </Typography>
+          {isMobile && (
+            <Stack direction="row" spacing={1.5} flexWrap="wrap">
+              {activeRegions.map((region) => (
+                <Stack key={region} direction="row" spacing={0.75} alignItems="center">
+                  <Box
+                    sx={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: "50%",
+                      bgcolor: REGION_META[region].color,
+                    }}
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    {REGION_META[region].label}
+                  </Typography>
+                </Stack>
+              ))}
+            </Stack>
+          )}
+        </Stack>
       </CardContent>
     </Card>
   );

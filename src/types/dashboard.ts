@@ -6,6 +6,12 @@ export type DashboardSummaryCard = {
   emphasis: "positive" | "negative" | "neutral";
   icon?: string;
   footer?: string;
+  breakdown?: {
+    region: RegionKey;
+    label: string;
+    value: string;
+    color: string;
+  }[];
 };
 
 export type RegionKey = "almaty" | "zhambyl" | "turkestan" | "aktobe";

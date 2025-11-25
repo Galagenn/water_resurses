@@ -9,8 +9,10 @@ import type {
   IrrigationEfficiencyPoint,
   SeasonalTrendPoint,
   RegionPerformanceRow,
+  RegionKey,
 } from "@/types/dashboard";
-import { REGION_KEYS } from "@/constants/regions";
+import { REGION_KEYS, REGION_META } from "@/constants/regions";
+import { regionSummaryStats } from "@/data/dashboard";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
@@ -104,61 +106,75 @@ export const generateVegetationData = (days: number): RegionVegetationPoint[] =>
   return data;
 };
 
-// Обновление summary cards на основе периода
-export const generateSummaryCards = (days: number): DashboardSummaryCard[] => {
-  // Базовые значения, которые изменяются в зависимости от периода
-  const waterBase = 18.4;
-  const waterChange = days <= 7 ? -2.1 : days <= 14 ? -3.2 : days <= 30 ? -4.2 : -5.5;
-  const waterValue = waterBase * (days / 30);
-  const waterChangeValue = waterBase * (days / 30) * (waterChange / 100);
-  
-  const coverageBase = 92;
-  const coverageChange = days <= 7 ? 1.5 : days <= 14 ? 2.3 : days <= 30 ? 3.1 : 4.2;
-  
-  const yieldBase = 41.6;
-  const yieldChange = days <= 7 ? 0.8 : days <= 14 ? 1.2 : days <= 30 ? 1.8 : 2.5;
-  
-  const alertsBase = 12;
-  const alertsChange = days <= 7 ? 4.5 : days <= 14 ? 6.8 : days <= 30 ? 9.1 : 12.3;
-  const alertsCount = Math.round(alertsBase * (days / 30));
-  const criticalAlerts = Math.round(alertsCount * 0.4);
-  
+const clampRegions = (regions?: RegionKey[]) => (regions && regions.length ? regions : REGION_KEYS);
+
+const formatNumber = (value: number, fractionDigits = 1) => Number(value.toFixed(fractionDigits));
+
+// Обновление summary cards на основе периода и выбранных регионов
+export const generateSummaryCards = (days: number, regions?: RegionKey[]): DashboardSummaryCard[] => {
+  const activeRegions = clampRegions(regions);
+  const periodFactor = clamp(days / 30, 0.75, 1.4);
+  const stats = activeRegions.map((region) => regionSummaryStats[region]);
+
+  type StatKey = keyof (typeof regionSummaryStats)[RegionKey];
+
+  const sumStat = (key: StatKey) => stats.reduce((sum, stat) => sum + stat[key], 0);
+  const avgStat = (key: StatKey) => sumStat(key) / stats.length;
+
+  const buildBreakdown = (key: StatKey, formatter: (value: number) => string) =>
+    activeRegions.map((region) => ({
+      region,
+      label: REGION_META[region].label,
+      value: formatter(regionSummaryStats[region][key]),
+      color: REGION_META[region].color,
+    }));
+
+  const waterTotal = sumStat("water") * periodFactor;
+  const coverageAvg = avgStat("coverage");
+  const yieldAvg = avgStat("yield");
+  const alertsTotal = sumStat("alerts") * periodFactor;
+  const criticalAlerts = Math.round(sumStat("criticalAlerts") * periodFactor);
+
   return [
     {
       id: "water",
       label: "Использование воды",
-      value: `${waterValue.toFixed(1)} млн м³`,
-      change: waterChange,
+      value: `${waterTotal.toFixed(1)} млн м³`,
+      change: formatNumber(avgStat("waterChange")),
       emphasis: "positive",
       icon: "💧",
-      footer: `${waterChangeValue > 0 ? "+" : ""}${Math.abs(waterChangeValue).toFixed(1)} млн м³ к прошлому периоду`,
+      footer: `Суммарно по ${activeRegions.length} регионам`,
+      breakdown: buildBreakdown("water", (value) => `${(value * periodFactor).toFixed(1)} млн м³`),
     },
     {
       id: "coverage",
       label: "Покрытие спутником",
-      value: `${coverageBase}%`,
-      change: coverageChange,
+      value: `${coverageAvg.toFixed(1)}%`,
+      change: formatNumber(avgStat("coverageChange")),
       emphasis: "positive",
       icon: "🛰️",
-      footer: `+${Math.round(coverageChange * days / 30)}% новых снимков высокого разрешения`,
+      footer: "Среднее покрытие по выбранным регионам",
+      breakdown: buildBreakdown("coverage", (value) => `${value.toFixed(1)}%`),
     },
     {
       id: "yield",
       label: "Прогноз урожайности",
-      value: `${yieldBase} ц/га`,
-      change: yieldChange,
+      value: `${yieldAvg.toFixed(1)} ц/га`,
+      change: formatNumber(avgStat("yieldChange")),
       emphasis: "neutral",
       icon: "🌾",
-      footer: "Стабильный прогноз по ключевым культурам",
+      footer: "Средний прогноз по культурам",
+      breakdown: buildBreakdown("yield", (value) => `${value.toFixed(1)} ц/га`),
     },
     {
       id: "alerts",
       label: "Активные оповещения",
-      value: alertsCount,
-      change: alertsChange,
+      value: Math.round(alertsTotal),
+      change: formatNumber(avgStat("alertsChange")),
       emphasis: "negative",
       icon: "⚠️",
-      footer: `${criticalAlerts} критических аномалий требуют внимания`,
+      footer: `${criticalAlerts} критических аномалий`,
+      breakdown: buildBreakdown("alerts", (value) => `${Math.round(value * periodFactor)} опов.`),
     },
   ];
 };
