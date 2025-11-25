@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Box, Container, Stack, Typography, useMediaQuery } from "@mui/material";
 import StatCard from "@/components/shared/StatCard";
 import DateRangePicker from "@/components/shared/DateRangePicker";
@@ -20,6 +20,8 @@ import {
   notificationFeed,
 } from "@/data/dashboard";
 import { regionPerformance } from "@/data/analytics";
+import { REGION_KEYS } from "@/constants/regions";
+import type { RegionKey } from "@/types/dashboard";
 import {
   generateSummaryCards,
   generateWaterUsageData,
@@ -35,6 +37,11 @@ export default function DashboardPage() {
   const containerPadding = isCompact ? 1.25 : 2;
   const sectionGap = { xs: 2.5, md: 3 };
   const [selectedPeriod, setSelectedPeriod] = useState(30);
+  const [selectedRegions, setSelectedRegions] = useState<RegionKey[]>(REGION_KEYS);
+
+  const handleRegionSelection = useCallback((ids: string[]) => {
+    setSelectedRegions(ids.filter((id): id is RegionKey => REGION_KEYS.includes(id as RegionKey)));
+  }, []);
 
   const summaryCards = useMemo(() => generateSummaryCards(selectedPeriod), [selectedPeriod]);
   const waterUsageSeries = useMemo(() => generateWaterUsageData(selectedPeriod), [selectedPeriod]);
@@ -93,7 +100,11 @@ export default function DashboardPage() {
                 />
               </Box>
               <Box sx={{ flex: 1 }}>
-                <RegionSelector regions={regions} />
+                <RegionSelector
+                  regions={regions}
+                  selected={selectedRegions}
+                  onSelectionChange={handleRegionSelection}
+                />
               </Box>
             </Stack>
           </Box>
@@ -118,19 +129,19 @@ export default function DashboardPage() {
         </Box>
 
         <Box sx={{ minWidth: 0 }}>
-          <WaterUsageChart data={waterUsageSeries} />
+          <WaterUsageChart data={waterUsageSeries} visibleRegions={selectedRegions} />
         </Box>
 
         <Box sx={{ minWidth: 0 }}>
-          <VegetationTrendChart data={vegetationSeries} />
+          <VegetationTrendChart data={vegetationSeries} visibleRegions={selectedRegions} />
         </Box>
 
         <Box sx={{ minWidth: 0 }}>
-          <AnomalyMap zones={filteredAnomalies} />
+          <AnomalyMap zones={filteredAnomalies} visibleRegions={selectedRegions} />
         </Box>
 
         <Box sx={{ minWidth: 0 }}>
-          <CropYieldComparisonChart data={cropYieldSeries} />
+          <CropYieldComparisonChart data={cropYieldSeries} visibleRegions={selectedRegions} />
         </Box>
 
         <Box

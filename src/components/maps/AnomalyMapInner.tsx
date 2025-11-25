@@ -5,14 +5,10 @@ import "leaflet/dist/leaflet.css";
 import { memo, useMemo } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import type { AnomalyZone } from "@/types/dashboard";
+import { REGION_META } from "@/constants/regions";
 
 type Props = {
   zones: AnomalyZone[];
-};
-
-const severityColor: Record<AnomalyZone["severity"], string> = {
-  warning: "#f97316",
-  critical: "#ef4444",
 };
 
 const AnomalyMapInner = ({ zones }: Props) => {
@@ -36,24 +32,33 @@ const AnomalyMapInner = ({ zones }: Props) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {zones.map((zone) => (
-        <CircleMarker
-          key={zone.id}
-          center={[zone.lat, zone.lng]}
-          radius={18}
-          pathOptions={{ color: severityColor[zone.severity], weight: 2, fillOpacity: 0.4 }}
-        >
-          <Popup>
-            <strong>{zone.fieldName}</strong>
-            <br />
-            {zone.crop}
-            <br />
-            {zone.issue}
-            <br />
-            {zone.forecast}
-          </Popup>
-        </CircleMarker>
-      ))}
+      {zones.map((zone) => {
+        const regionColor = REGION_META[zone.region].color;
+
+        return (
+          <CircleMarker
+            key={zone.id}
+            center={[zone.lat, zone.lng]}
+            radius={18}
+            pathOptions={{
+              color: regionColor,
+              weight: 3,
+              fillColor: regionColor,
+              fillOpacity: 0.35,
+            }}
+          >
+            <Popup>
+              <strong>{zone.fieldName}</strong>
+              <br />
+              {zone.crop}
+              <br />
+              {zone.issue}
+              <br />
+              {zone.forecast}
+            </Popup>
+          </CircleMarker>
+        );
+      })}
     </MapContainer>
   );
 };

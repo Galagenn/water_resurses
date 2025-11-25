@@ -14,16 +14,26 @@ import type { RegionOption } from "@/types/dashboard";
 
 type Props = {
   regions: RegionOption[];
+  selected?: string[];
+  onSelectionChange?: (ids: string[]) => void;
 };
 
-const RegionSelector = ({ regions }: Props) => {
-  const [selectedRegions, setSelectedRegions] = useState<string[]>(
-    regions[0] ? [regions[0].id] : []
+const RegionSelector = ({ regions, selected, onSelectionChange }: Props) => {
+  const [internalSelection, setInternalSelection] = useState<string[]>(
+    regions.slice(0, 4).map((region) => region.id)
   );
+
+  const currentSelection = selected ?? internalSelection;
 
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value;
-    setSelectedRegions(typeof value === "string" ? value.split(",") : value);
+    const nextValue = typeof value === "string" ? value.split(",") : value;
+
+    if (selected === undefined) {
+      setInternalSelection(nextValue);
+    }
+
+    onSelectionChange?.(nextValue);
   };
 
   const renderSelected = (selected: string[]) => {
@@ -46,7 +56,7 @@ const RegionSelector = ({ regions }: Props) => {
       </Typography>
       <Select
         multiple
-        value={selectedRegions}
+        value={currentSelection}
         onChange={handleChange}
         size="small"
         displayEmpty
@@ -66,7 +76,7 @@ const RegionSelector = ({ regions }: Props) => {
         {regions.map((region) => (
           <MenuItem key={region.id} value={region.id}>
             <Checkbox
-              checked={selectedRegions.includes(region.id)}
+              checked={currentSelection.includes(region.id)}
               size="small"
             />
             <ListItemText primary={region.name} />

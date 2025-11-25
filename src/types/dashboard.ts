@@ -8,21 +8,23 @@ export type DashboardSummaryCard = {
   footer?: string;
 };
 
-export type TimeSeriesPoint = {
+export type RegionKey = "almaty" | "zhambyl" | "turkestan" | "aktobe";
+
+export type RegionSeriesPoint = {
   period: string;
+} & Record<RegionKey, number>;
+
+export type RegionVegetationPoint = {
+  period: string;
+} & {
+  [K in RegionKey as `${K}Ndvi`]: number;
+} & {
+  [K in RegionKey as `${K}Evi`]: number;
+};
+
+export type RegionYieldPoint = {
+  region: RegionKey;
   value: number;
-};
-
-export type VegetationSeriesPoint = {
-  period: string;
-  ndvi: number;
-  evi: number;
-};
-
-export type CropYieldPoint = {
-  crop: string;
-  current: number;
-  previous: number;
 };
 
 export type ForecastItem = {
@@ -55,6 +57,7 @@ export type AnomalyZone = {
   issue: string;
   forecast: string;
   severity: "warning" | "critical";
+  region: RegionKey;
   lat: number;
   lng: number;
 };

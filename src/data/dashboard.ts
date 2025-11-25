@@ -1,12 +1,12 @@
 import type {
   AlertItem,
   AnomalyZone,
-  CropYieldPoint,
+  RegionYieldPoint,
   DashboardSummaryCard,
   ForecastItem,
   RegionOption,
-  TimeSeriesPoint,
-  VegetationSeriesPoint,
+  RegionSeriesPoint,
+  RegionVegetationPoint,
   FieldSnapshot,
   NotificationItem,
 } from "@/types/dashboard";
@@ -50,29 +50,89 @@ export const summaryCards: DashboardSummaryCard[] = [
   },
 ];
 
-export const waterUsageSeries: TimeSeriesPoint[] = [
-  { period: "Нед 01", value: 3.2 },
-  { period: "Нед 02", value: 3.6 },
-  { period: "Нед 03", value: 3.1 },
-  { period: "Нед 04", value: 2.9 },
-  { period: "Нед 05", value: 2.8 },
-  { period: "Нед 06", value: 2.6 },
+export const waterUsageSeries: RegionSeriesPoint[] = [
+  { period: "Нед 01", almaty: 3.4, zhambyl: 2.9, turkestan: 3.1, aktobe: 2.6 },
+  { period: "Нед 02", almaty: 3.6, zhambyl: 3.1, turkestan: 3.2, aktobe: 2.7 },
+  { period: "Нед 03", almaty: 3.2, zhambyl: 2.8, turkestan: 3.0, aktobe: 2.5 },
+  { period: "Нед 04", almaty: 3.0, zhambyl: 2.7, turkestan: 2.9, aktobe: 2.4 },
+  { period: "Нед 05", almaty: 2.9, zhambyl: 2.6, turkestan: 2.8, aktobe: 2.3 },
+  { period: "Нед 06", almaty: 2.8, zhambyl: 2.5, turkestan: 2.7, aktobe: 2.2 },
 ];
 
-export const vegetationSeries: VegetationSeriesPoint[] = [
-  { period: "Нед 01", ndvi: 0.62, evi: 0.48 },
-  { period: "Нед 02", ndvi: 0.66, evi: 0.51 },
-  { period: "Нед 03", ndvi: 0.71, evi: 0.55 },
-  { period: "Нед 04", ndvi: 0.68, evi: 0.53 },
-  { period: "Нед 05", ndvi: 0.63, evi: 0.49 },
-  { period: "Нед 06", ndvi: 0.59, evi: 0.47 },
+export const vegetationSeries: RegionVegetationPoint[] = [
+  {
+    period: "Нед 01",
+    almatyNdvi: 0.64,
+    almatyEvi: 0.49,
+    zhambylNdvi: 0.6,
+    zhambylEvi: 0.46,
+    turkestanNdvi: 0.67,
+    turkestanEvi: 0.52,
+    aktobeNdvi: 0.58,
+    aktobeEvi: 0.44,
+  },
+  {
+    period: "Нед 02",
+    almatyNdvi: 0.66,
+    almatyEvi: 0.51,
+    zhambylNdvi: 0.62,
+    zhambylEvi: 0.48,
+    turkestanNdvi: 0.69,
+    turkestanEvi: 0.54,
+    aktobeNdvi: 0.6,
+    aktobeEvi: 0.46,
+  },
+  {
+    period: "Нед 03",
+    almatyNdvi: 0.68,
+    almatyEvi: 0.52,
+    zhambylNdvi: 0.64,
+    zhambylEvi: 0.5,
+    turkestanNdvi: 0.72,
+    turkestanEvi: 0.56,
+    aktobeNdvi: 0.62,
+    aktobeEvi: 0.47,
+  },
+  {
+    period: "Нед 04",
+    almatyNdvi: 0.67,
+    almatyEvi: 0.51,
+    zhambylNdvi: 0.63,
+    zhambylEvi: 0.49,
+    turkestanNdvi: 0.7,
+    turkestanEvi: 0.55,
+    aktobeNdvi: 0.61,
+    aktobeEvi: 0.46,
+  },
+  {
+    period: "Нед 05",
+    almatyNdvi: 0.63,
+    almatyEvi: 0.48,
+    zhambylNdvi: 0.6,
+    zhambylEvi: 0.46,
+    turkestanNdvi: 0.66,
+    turkestanEvi: 0.52,
+    aktobeNdvi: 0.58,
+    aktobeEvi: 0.44,
+  },
+  {
+    period: "Нед 06",
+    almatyNdvi: 0.6,
+    almatyEvi: 0.46,
+    zhambylNdvi: 0.57,
+    zhambylEvi: 0.44,
+    turkestanNdvi: 0.63,
+    turkestanEvi: 0.5,
+    aktobeNdvi: 0.55,
+    aktobeEvi: 0.42,
+  },
 ];
 
-export const cropYieldSeries: CropYieldPoint[] = [
-  { crop: "Пшеница", current: 42, previous: 39 },
-  { crop: "Кукуруза", current: 61, previous: 58 },
-  { crop: "Хлопок", current: 35, previous: 37 },
-  { crop: "Соя", current: 29, previous: 24 },
+export const cropYieldSeries: RegionYieldPoint[] = [
+  { region: "almaty", value: 44 },
+  { region: "zhambyl", value: 39 },
+  { region: "turkestan", value: 47 },
+  { region: "aktobe", value: 36 },
 ];
 
 export const forecastSummary: ForecastItem[] = [
@@ -160,6 +220,7 @@ export const anomalyZones: AnomalyZone[] = [
     issue: "Засоление почвы",
     forecast: "Вероятен недобор урожая",
     severity: "critical",
+    region: "almaty",
     lat: 43.45,
     lng: 77.13,
   },
@@ -171,6 +232,7 @@ export const anomalyZones: AnomalyZone[] = [
     issue: "Недостаток влаги",
     forecast: "Требуется корректировка полива",
     severity: "warning",
+    region: "zhambyl",
     lat: 43.87,
     lng: 75.18,
   },
@@ -182,17 +244,29 @@ export const anomalyZones: AnomalyZone[] = [
     issue: "Перегрев растений",
     forecast: "Мониторинг 48 часов",
     severity: "warning",
+    region: "turkestan",
     lat: 42.32,
     lng: 69.59,
+  },
+  {
+    id: "anomaly-4",
+    fieldId: "field-11k",
+    fieldName: "Поле 11K",
+    crop: "Соя",
+    issue: "Снижение влажности почвы",
+    forecast: "Добавить ночной полив +10%",
+    severity: "warning",
+    region: "aktobe",
+    lat: 49.95,
+    lng: 57.15,
   },
 ];
 
 export const regions: RegionOption[] = [
-  { id: "all", name: "Все регионы" },
-  { id: "alm", name: "Алматинская область" },
-  { id: "zhm", name: "Жамбылская область" },
-  { id: "trk", name: "Туркестанская область" },
-  { id: "atk", name: "Актюбинская область" },
+  { id: "almaty", name: "Алматинская область" },
+  { id: "zhambyl", name: "Жамбылская область" },
+  { id: "turkestan", name: "Туркестанская область" },
+  { id: "aktobe", name: "Актюбинская область" },
 ];
 
 export const notificationFeed: NotificationItem[] = [

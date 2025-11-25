@@ -1,8 +1,8 @@
 import type {
   DashboardSummaryCard,
-  TimeSeriesPoint,
-  VegetationSeriesPoint,
-  CropYieldPoint,
+  RegionSeriesPoint,
+  RegionVegetationPoint,
+  RegionYieldPoint,
   ForecastItem,
   AlertItem,
   AnomalyZone,
@@ -10,6 +10,7 @@ import type {
   SeasonalTrendPoint,
   RegionPerformanceRow,
 } from "@/types/dashboard";
+import { REGION_KEYS } from "@/constants/regions";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
@@ -39,8 +40,8 @@ const formatUTCDate = (date: Date) => {
 };
 
 // Генерация данных для временных рядов на основе периода
-export const generateWaterUsageData = (days: number): TimeSeriesPoint[] => {
-  const data: TimeSeriesPoint[] = [];
+export const generateWaterUsageData = (days: number): RegionSeriesPoint[] => {
+  const data: RegionSeriesPoint[] = [];
   const baseDate = getUTCBaseDate();
   const interval = days <= 7 ? 1 : days <= 14 ? 2 : days <= 30 ? 3 : 7; // Интервал в днях
   const numPoints = Math.ceil(days / interval);
@@ -53,21 +54,24 @@ export const generateWaterUsageData = (days: number): TimeSeriesPoint[] => {
     const periodLabel =
       days <= 14 ? formatUTCDate(date) : `Нед ${i + 1}`;
 
-    const baseValue = 3.0;
-    const variation = Math.sin(i * 0.3) * 0.5 + (rand() - 0.5) * 0.3;
-    const value = clamp(baseValue + variation, 2.0, 4.0);
+    const point: Record<string, string | number> = { period: periodLabel };
 
-    data.push({
-      period: periodLabel,
-      value: Math.round(value * 10) / 10,
+    REGION_KEYS.forEach((regionKey, regionIndex) => {
+      const baseValue = 3.2 - regionIndex * 0.18;
+      const regionalVariation = Math.sin(i * 0.25 + regionIndex * 0.2) * 0.25;
+      const randomOffset = (rand() - 0.5) * 0.25;
+      const value = clamp(baseValue + regionalVariation + randomOffset, 2.0, 4.2);
+      point[regionKey] = Math.round(value * 100) / 100;
     });
+
+    data.push(point as RegionSeriesPoint);
   }
 
   return data;
 };
 
-export const generateVegetationData = (days: number): VegetationSeriesPoint[] => {
-  const data: VegetationSeriesPoint[] = [];
+export const generateVegetationData = (days: number): RegionVegetationPoint[] => {
+  const data: RegionVegetationPoint[] = [];
   const baseDate = getUTCBaseDate();
   const interval = days <= 7 ? 1 : days <= 14 ? 2 : days <= 30 ? 3 : 7;
   const numPoints = Math.ceil(days / interval);
@@ -80,16 +84,21 @@ export const generateVegetationData = (days: number): VegetationSeriesPoint[] =>
     const periodLabel =
       days <= 14 ? formatUTCDate(date) : `Нед ${i + 1}`;
 
-    const baseNDVI = 0.65;
-    const baseEVI = 0.5;
-    const ndviVariation = Math.sin(i * 0.2) * 0.08 + (rand() - 0.5) * 0.05;
-    const eviVariation = Math.cos(i * 0.2) * 0.06 + (rand() - 0.5) * 0.04;
+    const point: Record<string, string | number> = { period: periodLabel };
 
-    data.push({
-      period: periodLabel,
-      ndvi: Math.round(clamp(baseNDVI + ndviVariation, 0.45, 0.8) * 100) / 100,
-      evi: Math.round(clamp(baseEVI + eviVariation, 0.4, 0.7) * 100) / 100,
+    REGION_KEYS.forEach((regionKey, regionIndex) => {
+      const ndviBase = 0.62 + regionIndex * 0.02;
+      const eviBase = 0.48 + regionIndex * 0.015;
+      const ndviVariation = Math.sin(i * 0.2 + regionIndex * 0.1) * 0.05;
+      const eviVariation = Math.cos(i * 0.2 + regionIndex * 0.15) * 0.04;
+
+      point[`${regionKey}Ndvi`] =
+        Math.round(clamp(ndviBase + ndviVariation + (rand() - 0.5) * 0.03, 0.45, 0.85) * 100) / 100;
+      point[`${regionKey}Evi`] =
+        Math.round(clamp(eviBase + eviVariation + (rand() - 0.5) * 0.02, 0.4, 0.7) * 100) / 100;
     });
+
+    data.push(point as RegionVegetationPoint);
   }
 
   return data;
@@ -176,14 +185,20 @@ export const filterAnomaliesByPeriod = (anomalies: AnomalyZone[], days: number):
 };
 
 // Генерация данных урожайности (может немного изменяться в зависимости от периода)
-export const generateCropYieldData = (days: number): CropYieldPoint[] => {
-  const multiplier = days / 30; // Нормализация к 30 дням
-  return [
-    { crop: "Пшеница", current: Math.round(42 * multiplier), previous: Math.round(39 * multiplier) },
-    { crop: "Кукуруза", current: Math.round(61 * multiplier), previous: Math.round(58 * multiplier) },
-    { crop: "Хлопок", current: Math.round(35 * multiplier), previous: Math.round(37 * multiplier) },
-    { crop: "Соя", current: Math.round(29 * multiplier), previous: Math.round(24 * multiplier) },
-  ];
+export const generateCropYieldData = (days: number): RegionYieldPoint[] => {
+  const multiplier = clamp(days / 30, 0.5, 2);
+  const rand = createSeededRandom(days * 457);
+
+  return REGION_KEYS.map((regionKey, index) => {
+    const baseYield = 38 + index * 3.5;
+    const variation = (rand() - 0.5) * 4;
+    const value = Math.round((baseYield + variation) * multiplier);
+
+    return {
+      region: regionKey,
+      value,
+    };
+  });
 };
 
 // Прогнозы обычно не зависят от периода, но можно немного скорректировать
