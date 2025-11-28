@@ -265,19 +265,24 @@ export const generateIrrigationEfficiencyData = (days: number): IrrigationEffici
   for (let i = 0; i < numPoints; i++) {
     const daysAgo = (numPoints - i - 1) * interval;
     const date = shiftUTCDate(baseDate, daysAgo);
-    const periodLabel =
-      days <= 14 ? formatUTCDate(date) : `Нед ${i + 1}`;
+    const periodLabel = days <= 14 ? formatUTCDate(date) : `Нед ${i + 1}`;
 
-    const baseConsumption = 1100;
-    const baseEfficiency = 70;
-    const consumption = clamp(baseConsumption - i * 45 + (rand() - 0.5) * 80, 800, 1400);
-    const efficiency = clamp(baseEfficiency + i * 2 + (rand() - 0.5) * 4, 55, 85);
+    const baseValues: Record<RegionKey, number> = {
+      almaty: 66 + i * 1.5,
+      zhambyl: 62 + i * 1.2,
+      turkestan: 69 + i * 1.7,
+      aktobe: 58 + i * 1.1,
+    };
 
-    data.push({
-      period: periodLabel,
-      consumption: Math.round(consumption),
-      efficiency: Math.round(efficiency),
+    const point: IrrigationEfficiencyPoint = { period: periodLabel } as IrrigationEfficiencyPoint;
+
+    REGION_KEYS.forEach((regionKey) => {
+      const noise = (rand() - 0.5) * 3;
+      const value = clamp(baseValues[regionKey] + noise, 55, 90);
+      (point as any)[regionKey] = Math.round(value * 10) / 10;
     });
+
+    data.push(point);
   }
 
   return data;
@@ -294,16 +299,22 @@ export const generateSeasonalTrendsData = (days: number): SeasonalTrendPoint[] =
     const date = shiftUTCDate(baseDate, daysAgo);
     const label = days <= 30 ? formatUTCDate(date) : `Нед ${index + 1}`;
 
-    const baseNorth = 0.55 + index * 0.02;
-    const baseSouth = 0.62 + index * 0.02;
-    const baseEast = 0.58 + index * 0.015;
-
-    return {
-      month: label,
-      regionNorth: Math.round(clamp(baseNorth + (rand() - 0.5) * 0.04, 0.45, 0.85) * 100) / 100,
-      regionSouth: Math.round(clamp(baseSouth + (rand() - 0.5) * 0.04, 0.5, 0.9) * 100) / 100,
-      regionEast: Math.round(clamp(baseEast + (rand() - 0.5) * 0.04, 0.48, 0.88) * 100) / 100,
+    const baseValues: Record<RegionKey, number> = {
+      almaty: 0.60 + index * 0.02,
+      zhambyl: 0.55 + index * 0.018,
+      turkestan: 0.62 + index * 0.022,
+      aktobe: 0.5 + index * 0.017,
     };
+
+    const point: SeasonalTrendPoint = { month: label } as SeasonalTrendPoint;
+
+    REGION_KEYS.forEach((regionKey) => {
+      const noise = (rand() - 0.5) * 0.04;
+      const clamped = clamp(baseValues[regionKey] + noise, 0.45, 0.9);
+      (point as any)[regionKey] = Math.round(clamped * 100) / 100;
+    });
+
+    return point;
   });
 };
 

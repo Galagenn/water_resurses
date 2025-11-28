@@ -4,6 +4,7 @@ import { useState } from "react";
 import Grid from "@mui/material/GridLegacy";
 import {
   Avatar,
+  Box,
   Button,
   Card,
   CardContent,
@@ -11,9 +12,13 @@ import {
   Chip,
   Container,
   Divider,
+  FormControl,
+  InputLabel,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
+  Select,
   Stack,
   Switch,
   TextField,
@@ -21,6 +26,13 @@ import {
 } from "@mui/material";
 
 const roles = ["Администратор", "Агроном", "ИИ-аналитик"];
+
+const regions = [
+  "Алматы",
+  "Жамбыл",
+  "Туркестан",
+  "Актобе",
+];
 
 const sessions = [
   { id: "1", device: "MacBook Pro · Chrome", location: "Алматы, Казахстан", lastActive: "2 мин назад" },
@@ -31,6 +43,7 @@ const sessions = [
 const AccountPage = () => {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState("Алматы");
 
   return (
     <Container maxWidth={false} sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5 } }}>
@@ -44,9 +57,9 @@ const AccountPage = () => {
 
         <Grid container spacing={{ xs: 2.5, md: 3 }}>
           <Grid item xs={12} md={8}>
-            <Card>
+            <Card sx={{ overflow: 'hidden', width: '100%', maxWidth: '100%' }}>
               <CardHeader title="Профиль пользователя" />
-              <CardContent>
+              <CardContent sx={{ overflow: 'hidden', overflowX: 'hidden', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
                 <Stack spacing={3}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Avatar sx={{ width: 64, height: 64, fontSize: 28 }}>G</Avatar>
@@ -60,27 +73,38 @@ const AccountPage = () => {
                     </Stack>
                   </Stack>
 
-                  <Grid container spacing={2.5}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField label="Имя" fullWidth defaultValue="Гала" />
+                  <Box sx={{ width: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
+                    <Grid container spacing={2.5}>
+                      <Grid item xs={12} sm={6} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
+                        <TextField label="Имя" fullWidth defaultValue="Гала" />
+                      </Grid>
+                      <Grid item xs={12} sm={6} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
+                        <TextField label="Фамилия" fullWidth defaultValue="Байжан" />
+                      </Grid>
+                      <Grid item xs={12} sm={6} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
+                        <TextField label="Email" type="email" fullWidth defaultValue="gala@agrosense.ai" />
+                      </Grid>
+                      <Grid item xs={12} sm={6} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
+                        <TextField label="Телефон" fullWidth defaultValue="+7 701 000 45 67" />
+                      </Grid>
+                      <Grid item xs={12} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
+                        <FormControl fullWidth>
+                          <InputLabel>Основной регион ответственности</InputLabel>
+                          <Select
+                            value={selectedRegion}
+                            label="Основной регион ответственности"
+                            onChange={(e) => setSelectedRegion(e.target.value)}
+                          >
+                            {regions.map((region) => (
+                              <MenuItem key={region} value={region}>
+                                {region}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField label="Фамилия" fullWidth defaultValue="Байжан" />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField label="Email" type="email" fullWidth defaultValue="gala@agrosense.ai" />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField label="Телефон" fullWidth defaultValue="+7 701 000 45 67" />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        label="Основной регион ответственности"
-                        fullWidth
-                        defaultValue="Алматинская область"
-                      />
-                    </Grid>
-                  </Grid>
+                  </Box>
 
                   <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="flex-end">
                     <Button variant="outlined">Отменить</Button>

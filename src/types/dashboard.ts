@@ -75,16 +75,11 @@ export type RegionOption = {
 
 export type IrrigationEfficiencyPoint = {
   period: string;
-  consumption: number;
-  efficiency: number;
-};
+} & Record<RegionKey, number>;
 
 export type SeasonalTrendPoint = {
   month: string;
-  regionNorth: number;
-  regionSouth: number;
-  regionEast: number;
-};
+} & Record<RegionKey, number>;
 
 export type RegionPerformanceRow = {
   region: string;

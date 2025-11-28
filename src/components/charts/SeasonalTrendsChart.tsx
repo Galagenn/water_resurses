@@ -11,65 +11,98 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { SeasonalTrendPoint } from "@/types/dashboard";
+import type { SeasonalTrendPoint, RegionKey } from "@/types/dashboard";
+import { REGION_KEYS, REGION_META } from "@/constants/regions";
 
 type Props = {
   data: SeasonalTrendPoint[];
+  visibleRegions?: RegionKey[];
 };
 
-const SeasonalTrendsChart = ({ data }: Props) => (
-  <Card sx={{ height: "100%" }}>
-    <CardContent sx={{ height: { xs: 280, sm: 320, md: 380 } }}>
-      <Typography variant="h6" mb={2}>
-        Сезонная динамика NDVI
-      </Typography>
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="northGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#38bdf8" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="southGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#f472b6" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#f472b6" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="eastGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.12)" />
-          <XAxis dataKey="month" />
-          <YAxis domain={[0.4, 0.9]} />
-          <Tooltip contentStyle={{ backgroundColor: "#0f172a" }} />
-          <Legend />
-          <Area
-            type="monotone"
-            dataKey="regionNorth"
-            name="Север"
-            stroke="#38bdf8"
-            fill="url(#northGradient)"
-          />
-          <Area
-            type="monotone"
-            dataKey="regionSouth"
-            name="Юг"
-            stroke="#f472b6"
-            fill="url(#southGradient)"
-          />
-          <Area
-            type="monotone"
-            dataKey="regionEast"
-            name="Восток"
-            stroke="#22c55e"
-            fill="url(#eastGradient)"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    </CardContent>
-  </Card>
-);
+const SeasonalTrendsChart = ({ data, visibleRegions }: Props) => {
+  const activeRegions = visibleRegions ?? REGION_KEYS;
+
+  return (
+    <Card
+      sx={{
+        height: "100%",
+        bgcolor: "background.paper",
+        border: "1px solid rgba(148,163,184,0.25)",
+      }}
+    >
+      <CardContent
+        sx={{
+          height: { xs: 280, sm: 320, md: 380 },
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        <Typography variant="h6">Сезонная динамика NDVI по регионам</Typography>
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={data}
+            margin={{ top: 16, right: 16, left: 0, bottom: 20 }}
+          >
+            <CartesianGrid stroke="rgba(148,163,184,0.2)" strokeDasharray="4 4" />
+            <XAxis
+              dataKey="month"
+              tick={{ fill: "#cbd5f5" }}
+              label={{
+                value: "Период",
+                position: "insideBottom",
+                offset: -6,
+                fill: "#cbd5f5",
+              }}
+            />
+            <YAxis
+              domain={[0.4, 0.9]}
+              tick={{ fill: "#cbd5f5" }}
+              label={{
+                value: "NDVI",
+                angle: -90,
+                position: "insideLeft",
+                fill: "#cbd5f5",
+              }}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#0f172a",
+                borderColor: "rgba(148,163,184,0.4)",
+                color: "#f8fafc",
+              }}
+              labelStyle={{ color: "#e2e8f0" }}
+              formatter={(value: number | string, key) => {
+                const numericValue = typeof value === "number" ? value : Number(value);
+                const label =
+                  typeof key === "string"
+                    ? REGION_META[key as keyof typeof REGION_META]?.label ?? key
+                    : String(key);
+                return [`${numericValue.toFixed(2)}`, label];
+              }}
+            />
+            <Legend wrapperStyle={{ paddingTop: 8 }} />
+
+            {activeRegions.map((key) => (
+              <Area
+                key={key}
+                type="monotone"
+                dataKey={key}
+                name={REGION_META[key].label}
+                stroke={REGION_META[key].color}
+                strokeWidth={2.5}
+                fill={REGION_META[key].color}
+                fillOpacity={0.12}
+                dot={false}
+                isAnimationActive={false}
+              />
+            ))}
+          </AreaChart>
+        </ResponsiveContainer>
+      </CardContent>
+    </Card>
+  );
+};
 
 export default SeasonalTrendsChart;
 

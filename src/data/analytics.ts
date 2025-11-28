@@ -5,21 +5,93 @@ import type {
 } from "@/types/dashboard";
 
 export const irrigationEfficiency: IrrigationEfficiencyPoint[] = [
-  { period: "Нед 01", consumption: 1280, efficiency: 64 },
-  { period: "Нед 02", consumption: 1190, efficiency: 66 },
-  { period: "Нед 03", consumption: 1110, efficiency: 71 },
-  { period: "Нед 04", consumption: 1030, efficiency: 73 },
-  { period: "Нед 05", consumption: 980, efficiency: 78 },
-  { period: "Нед 06", consumption: 940, efficiency: 81 },
+  {
+    period: "Нед 01",
+    almaty: 62,
+    zhambyl: 58,
+    turkestan: 65,
+    aktobe: 55,
+  },
+  {
+    period: "Нед 02",
+    almaty: 64,
+    zhambyl: 60,
+    turkestan: 67,
+    aktobe: 57,
+  },
+  {
+    period: "Нед 03",
+    almaty: 67,
+    zhambyl: 62,
+    turkestan: 70,
+    aktobe: 59,
+  },
+  {
+    period: "Нед 04",
+    almaty: 70,
+    zhambyl: 64,
+    turkestan: 73,
+    aktobe: 61,
+  },
+  {
+    period: "Нед 05",
+    almaty: 73,
+    zhambyl: 66,
+    turkestan: 76,
+    aktobe: 63,
+  },
+  {
+    period: "Нед 06",
+    almaty: 75,
+    zhambyl: 68,
+    turkestan: 78,
+    aktobe: 65,
+  },
 ];
 
 export const seasonalTrends: SeasonalTrendPoint[] = [
-  { month: "Март", regionNorth: 0.52, regionSouth: 0.61, regionEast: 0.56 },
-  { month: "Апрель", regionNorth: 0.58, regionSouth: 0.68, regionEast: 0.63 },
-  { month: "Май", regionNorth: 0.63, regionSouth: 0.74, regionEast: 0.69 },
-  { month: "Июнь", regionNorth: 0.67, regionSouth: 0.79, regionEast: 0.72 },
-  { month: "Июль", regionNorth: 0.71, regionSouth: 0.82, regionEast: 0.76 },
-  { month: "Август", regionNorth: 0.69, regionSouth: 0.78, regionEast: 0.73 },
+  {
+    month: "Март",
+    almaty: 0.58,
+    zhambyl: 0.53,
+    turkestan: 0.6,
+    aktobe: 0.48,
+  },
+  {
+    month: "Апрель",
+    almaty: 0.62,
+    zhambyl: 0.56,
+    turkestan: 0.65,
+    aktobe: 0.52,
+  },
+  {
+    month: "Май",
+    almaty: 0.66,
+    zhambyl: 0.59,
+    turkestan: 0.7,
+    aktobe: 0.55,
+  },
+  {
+    month: "Июнь",
+    almaty: 0.7,
+    zhambyl: 0.62,
+    turkestan: 0.74,
+    aktobe: 0.58,
+  },
+  {
+    month: "Июль",
+    almaty: 0.72,
+    zhambyl: 0.64,
+    turkestan: 0.77,
+    aktobe: 0.6,
+  },
+  {
+    month: "Август",
+    almaty: 0.7,
+    zhambyl: 0.63,
+    turkestan: 0.75,
+    aktobe: 0.59,
+  },
 ];
 
 export const regionPerformance: RegionPerformanceRow[] = [

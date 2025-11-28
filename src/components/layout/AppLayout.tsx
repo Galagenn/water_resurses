@@ -23,9 +23,9 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import TimelineIcon from "@mui/icons-material/Timeline";
+import StorageIcon from "@mui/icons-material/Storage";
 import AgricultureIcon from "@mui/icons-material/Agriculture";
 import SchoolIcon from "@mui/icons-material/School";
-import SettingsIcon from "@mui/icons-material/Settings";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AppLogo from "@/components/shared/AppLogo";
@@ -35,11 +35,11 @@ const drawerWidth = 260;
 const navigation = [
   { label: "Дашборд", href: "/", icon: <SpaceDashboardIcon /> },
   { label: "Аналитика", href: "/analytics", icon: <TimelineIcon /> },
+  { label: "Данные", href: "/data", icon: <StorageIcon /> },
   { label: "Поля", href: "/fields", icon: <AgricultureIcon /> },
   { label: "Обучение", href: "/training", icon: <SchoolIcon /> },
   { label: "Уведомления", href: "/notifications", icon: <NotificationsIcon /> },
   { label: "Учетная запись", href: "/account", icon: <AccountCircleIcon /> },
-  { label: "Настройки", href: "/settings", icon: <SettingsIcon /> },
 ];
 
 const AppLayout = ({ children }: PropsWithChildren) => {
