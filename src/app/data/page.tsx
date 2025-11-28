@@ -12,11 +12,11 @@ import {
   Chip,
   LinearProgress,
   Divider,
-  Grid,
   Switch,
   FormControlLabel,
   Alert,
 } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
 import StorageIcon from "@mui/icons-material/Storage";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
