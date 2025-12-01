@@ -39,7 +39,7 @@ const SeasonalTrendsChart = ({ data, visibleRegions }: Props) => {
         }}
       >
         <Typography variant="h6">Сезонная динамика NDVI по регионам</Typography>
-        <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
             margin={{ top: 16, right: 16, left: 0, bottom: 20 }}
@@ -80,13 +80,13 @@ const SeasonalTrendsChart = ({ data, visibleRegions }: Props) => {
                     : String(key);
                 return [`${numericValue.toFixed(2)}`, label];
               }}
-            />
+          />
             <Legend wrapperStyle={{ paddingTop: 8 }} />
 
             {activeRegions.map((key) => (
-              <Area
+          <Area
                 key={key}
-                type="monotone"
+            type="monotone"
                 dataKey={key}
                 name={REGION_META[key].label}
                 stroke={REGION_META[key].color}
@@ -97,11 +97,11 @@ const SeasonalTrendsChart = ({ data, visibleRegions }: Props) => {
                 isAnimationActive={false}
               />
             ))}
-          </AreaChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
-  );
+        </AreaChart>
+      </ResponsiveContainer>
+    </CardContent>
+  </Card>
+);
 };
 
 export default SeasonalTrendsChart;

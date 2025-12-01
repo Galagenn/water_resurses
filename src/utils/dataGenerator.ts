@@ -45,8 +45,8 @@ const formatUTCDate = (date: Date) => {
 export const generateWaterUsageData = (days: number): RegionSeriesPoint[] => {
   const data: RegionSeriesPoint[] = [];
   const baseDate = getUTCBaseDate();
-  const interval = days <= 7 ? 1 : days <= 14 ? 2 : days <= 30 ? 3 : 7; // Интервал в днях
-  const numPoints = Math.ceil(days / interval);
+  const numPoints = days === 30 ? 10 : days === 90 ? 12 : days <= 7 ? 7 : Math.ceil(days / 2);
+  const interval = Math.floor(days / numPoints);
   const rand = createSeededRandom(days * 137);
 
   for (let i = 0; i < numPoints; i++) {
@@ -54,7 +54,7 @@ export const generateWaterUsageData = (days: number): RegionSeriesPoint[] => {
     const date = shiftUTCDate(baseDate, daysAgo);
 
     const periodLabel =
-      days <= 14 ? formatUTCDate(date) : `Нед ${i + 1}`;
+      days <= 30 ? formatUTCDate(date) : `Нед ${i + 1}`;
 
     const point: Record<string, string | number> = { period: periodLabel };
 
@@ -75,8 +75,8 @@ export const generateWaterUsageData = (days: number): RegionSeriesPoint[] => {
 export const generateVegetationData = (days: number): RegionVegetationPoint[] => {
   const data: RegionVegetationPoint[] = [];
   const baseDate = getUTCBaseDate();
-  const interval = days <= 7 ? 1 : days <= 14 ? 2 : days <= 30 ? 3 : 7;
-  const numPoints = Math.ceil(days / interval);
+  const numPoints = days === 30 ? 10 : days === 90 ? 12 : days <= 7 ? 7 : Math.ceil(days / 2);
+  const interval = Math.floor(days / numPoints);
   const rand = createSeededRandom(days * 211);
 
   for (let i = 0; i < numPoints; i++) {
@@ -84,7 +84,7 @@ export const generateVegetationData = (days: number): RegionVegetationPoint[] =>
     const date = shiftUTCDate(baseDate, daysAgo);
 
     const periodLabel =
-      days <= 14 ? formatUTCDate(date) : `Нед ${i + 1}`;
+      days <= 30 ? formatUTCDate(date) : `Нед ${i + 1}`;
 
     const point: Record<string, string | number> = { period: periodLabel };
 
@@ -258,14 +258,14 @@ export const generateForecastData = (days: number): ForecastItem[] => {
 export const generateIrrigationEfficiencyData = (days: number): IrrigationEfficiencyPoint[] => {
   const data: IrrigationEfficiencyPoint[] = [];
   const baseDate = getUTCBaseDate();
-  const interval = days <= 7 ? 1 : days <= 14 ? 2 : days <= 30 ? 3 : 7;
-  const numPoints = Math.ceil(days / interval);
+  const numPoints = days === 30 ? 10 : days === 90 ? 12 : days <= 7 ? 7 : Math.ceil(days / 2);
+  const interval = Math.floor(days / numPoints);
   const rand = createSeededRandom(days * 331);
 
   for (let i = 0; i < numPoints; i++) {
     const daysAgo = (numPoints - i - 1) * interval;
     const date = shiftUTCDate(baseDate, daysAgo);
-    const periodLabel = days <= 14 ? formatUTCDate(date) : `Нед ${i + 1}`;
+    const periodLabel = days <= 30 ? formatUTCDate(date) : `Нед ${i + 1}`;
 
     const baseValues: Record<RegionKey, number> = {
       almaty: 66 + i * 1.5,
@@ -290,8 +290,8 @@ export const generateIrrigationEfficiencyData = (days: number): IrrigationEffici
 
 export const generateSeasonalTrendsData = (days: number): SeasonalTrendPoint[] => {
   const baseDate = getUTCBaseDate();
-  const interval = days <= 14 ? 2 : 7;
-  const numPoints = Math.max(2, Math.ceil(days / interval));
+  const numPoints = days === 30 ? 10 : days === 90 ? 12 : days <= 7 ? 7 : Math.max(2, Math.ceil(days / 2));
+  const interval = Math.floor(days / numPoints);
   const rand = createSeededRandom(days * 503);
 
   return Array.from({ length: numPoints }, (_, index) => {

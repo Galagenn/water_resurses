@@ -120,3 +120,15 @@ export type FieldSnapshot = {
   forecast: string;
 };
 
+export type ActionPlanTask = {
+  id: string;
+  title: string;
+  description: string;
+  priority: "low" | "medium" | "high";
+  status: "pending" | "in_progress" | "completed";
+  createdAt: string;
+  source?: string; // Источник задачи (например, "Аналитика")
+  region?: RegionKey;
+  relatedFieldId?: string;
+};
+

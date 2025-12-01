@@ -39,7 +39,7 @@ const IrrigationEfficiencyChart = ({ data, visibleRegions }: Props) => {
         }}
       >
         <Typography variant="h6">Эффективность орошения по регионам</Typography>
-        <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
             margin={{ top: 16, right: 16, left: 0, bottom: 20 }}
@@ -55,8 +55,8 @@ const IrrigationEfficiencyChart = ({ data, visibleRegions }: Props) => {
                 fill: "#cbd5f5",
               }}
             />
-            <YAxis
-              domain={[50, 100]}
+          <YAxis
+            domain={[50, 100]}
               tick={{ fill: "#cbd5f5" }}
               label={{
                 value: "Эффективность, %",
@@ -64,7 +64,7 @@ const IrrigationEfficiencyChart = ({ data, visibleRegions }: Props) => {
                 position: "insideLeft",
                 fill: "#cbd5f5",
               }}
-            />
+          />
             <Tooltip
               contentStyle={{
                 backgroundColor: "#0f172a",
@@ -84,9 +84,9 @@ const IrrigationEfficiencyChart = ({ data, visibleRegions }: Props) => {
             <Legend wrapperStyle={{ paddingTop: 8 }} />
 
             {activeRegions.map((key) => (
-              <Line
+          <Line
                 key={key}
-                type="monotone"
+            type="monotone"
                 dataKey={key}
                 name={REGION_META[key].label}
                 stroke={REGION_META[key].color}
@@ -97,10 +97,10 @@ const IrrigationEfficiencyChart = ({ data, visibleRegions }: Props) => {
               />
             ))}
           </LineChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
-  );
+      </ResponsiveContainer>
+    </CardContent>
+  </Card>
+);
 };
 
 export default IrrigationEfficiencyChart;

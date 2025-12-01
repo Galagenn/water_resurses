@@ -28,6 +28,7 @@ import AgricultureIcon from "@mui/icons-material/Agriculture";
 import SchoolIcon from "@mui/icons-material/School";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import AppLogo from "@/components/shared/AppLogo";
 
 const drawerWidth = 260;
@@ -35,6 +36,7 @@ const drawerWidth = 260;
 const navigation = [
   { label: "Дашборд", href: "/", icon: <SpaceDashboardIcon /> },
   { label: "Аналитика", href: "/analytics", icon: <TimelineIcon /> },
+  { label: "План действий", href: "/action-plan", icon: <AssignmentIcon /> },
   { label: "Данные", href: "/data", icon: <StorageIcon /> },
   { label: "Поля", href: "/fields", icon: <AgricultureIcon /> },
   { label: "Обучение", href: "/training", icon: <SchoolIcon /> },
@@ -50,8 +52,8 @@ const AppLayout = ({ children }: PropsWithChildren) => {
   const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
   const handleDesktopDrawerToggle = () => setDesktopOpen((prev) => !prev);
   const handleNavClick = () => {
+    // Для мобильного меню закрываем дровер после перехода, десктопную версию оставляем открытой
     setMobileOpen(false);
-    setDesktopOpen(false);
   };
 
   const drawer = (
@@ -91,7 +93,7 @@ const AppLayout = ({ children }: PropsWithChildren) => {
         <Typography variant="subtitle2" color="text.secondary">
           Следующий спутниковый проход
         </Typography>
-        <Typography variant="h6">через 02:14:08</Typography>
+        <Typography variant="h6">через Неделю</Typography>
       </Box>
     </Box>
   );

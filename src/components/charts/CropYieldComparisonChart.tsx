@@ -10,6 +10,49 @@ type Props = {
   visibleRegions?: RegionKey[];
 };
 
+type TooltipPayload = {
+  active?: boolean;
+  payload?: Array<{
+    value?: number | string;
+    payload?: { region: RegionKey };
+  }>;
+};
+
+const REGION_FULL_NAMES: Record<RegionKey, string> = {
+  almaty: "Алматинская область",
+  zhambyl: "Жамбылская область",
+  turkestan: "Туркестанская область",
+  aktobe: "Актюбинская область",
+};
+
+const YieldTooltip = ({ active, payload }: TooltipPayload) => {
+  if (!active || !payload?.length) {
+    return null;
+  }
+
+  const regionKey = payload[0]?.payload?.region as RegionKey | undefined;
+  const numericValue = payload[0]?.value ?? 0;
+  const label =
+    (regionKey && (REGION_FULL_NAMES[regionKey] ?? REGION_META[regionKey].label)) ?? "Регион";
+  const value = typeof numericValue === "number" ? numericValue : Number(numericValue);
+
+  return (
+    <Box
+      sx={{
+        backgroundColor: "#0f172a",
+        border: "1px solid rgba(148,163,184,0.4)",
+        borderRadius: 1,
+        px: 1.5,
+        py: 1,
+      }}
+    >
+      <Typography variant="body2" sx={{ color: "#f8fafc" }}>
+        {`${label}: ${value} ц/га`}
+      </Typography>
+    </Box>
+  );
+};
+
 const CropYieldComparisonChart = ({ data, visibleRegions }: Props) => {
   const activeRegions = visibleRegions ?? REGION_KEYS;
   const filteredData = data.filter((entry) => activeRegions.includes(entry.region));
@@ -36,18 +79,14 @@ const CropYieldComparisonChart = ({ data, visibleRegions }: Props) => {
             />
             <YAxis
               tick={{ fill: "#cbd5f5" }}
-              label={{ value: "ц/га", angle: -90, position: "insideLeft", fill: "#cbd5f5" }}
-            />
-            <Tooltip
-              contentStyle={{ backgroundColor: "#0f172a", borderColor: "rgba(148,163,184,0.4)", color: "#f8fafc" }}
-              labelStyle={{ color: "#e2e8f0" }}
-              formatter={(value: number | string, _key, payload) => {
-                const regionKey = payload?.payload?.region as keyof typeof REGION_META | undefined;
-                const label = regionKey ? REGION_META[regionKey].label : "Регион";
-                const numericValue = typeof value === "number" ? value : Number(value);
-                return [`${numericValue} ц/га`, label];
+              label={{
+                value: "ц/га",
+                angle: -90,
+                position: "insideLeft",
+                style: { fill: "#ffffff", fontSize: 12 },
               }}
             />
+            <Tooltip content={<YieldTooltip />} />
             <Bar dataKey="value" radius={[10, 10, 0, 0]}>
               {filteredData.map((entry) => (
                 <Cell key={entry.region} fill={REGION_META[entry.region].color} />

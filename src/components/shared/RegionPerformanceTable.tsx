@@ -11,11 +11,15 @@ import {
   TableRow,
   Typography,
   Chip,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
+import AddTaskIcon from "@mui/icons-material/AddTask";
 import type { RegionPerformanceRow } from "@/types/dashboard";
 
 type Props = {
   rows: RegionPerformanceRow[];
+  onAddTask?: (row: RegionPerformanceRow) => void;
 };
 
 const riskColor: Record<RegionPerformanceRow["riskLevel"], string> = {
@@ -24,7 +28,7 @@ const riskColor: Record<RegionPerformanceRow["riskLevel"], string> = {
   high: "#ef4444",
 };
 
-const RegionPerformanceTable = ({ rows }: Props) => (
+const RegionPerformanceTable = ({ rows, onAddTask }: Props) => (
   <Card>
     <CardContent>
       <Typography variant="h6" gutterBottom>
@@ -42,6 +46,7 @@ const RegionPerformanceTable = ({ rows }: Props) => (
               <TableCell>Урожайность</TableCell>
               <TableCell>Риск</TableCell>
               <TableCell>Рекомендация</TableCell>
+              {onAddTask && <TableCell align="center">Действие</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -62,6 +67,19 @@ const RegionPerformanceTable = ({ rows }: Props) => (
                   />
                 </TableCell>
                 <TableCell>{row.recommendation}</TableCell>
+                {onAddTask && (
+                  <TableCell align="center">
+                    <Tooltip title="Добавить в план действий">
+                      <IconButton
+                        size="small"
+                        onClick={() => onAddTask(row)}
+                        color="primary"
+                      >
+                        <AddTaskIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

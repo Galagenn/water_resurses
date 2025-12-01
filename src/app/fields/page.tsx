@@ -1,15 +1,44 @@
 'use client';
 
 import { useMemo, useState } from "react";
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
-import Link from "next/link";
-import FieldGrid from "@/components/fields/FieldGrid";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Container,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import FieldDetailDrawer from "@/components/fields/FieldDetailDrawer";
-import AlertsList from "@/components/shared/AlertsList";
-import { alerts, fieldsSnapshot } from "@/data/dashboard";
+import { fieldsSnapshot } from "@/data/dashboard";
+import type { FieldSnapshot } from "@/types/dashboard";
+
+const irrigationLabel: Record<FieldSnapshot["irrigationStatus"], string> = {
+  stable: "Стабильно",
+  increase: "Усилить",
+  decrease: "Снизить",
+};
+
+const irrigationColor: Record<FieldSnapshot["irrigationStatus"], "success" | "warning" | "info"> = {
+  stable: "success",
+  increase: "warning",
+  decrease: "info",
+};
 
 const FieldsPage = () => {
   const [selectedId, setSelectedId] = useState<string>();
+  const theme = useTheme();
+  const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
   const selectedField = useMemo(
     () => fieldsSnapshot.find((field) => field.id === selectedId),
     [selectedId]
@@ -38,38 +67,138 @@ const FieldsPage = () => {
           </Stack>
         </Stack>
 
-        <FieldGrid fields={fieldsSnapshot} onSelect={setSelectedId} />
-
-        <Box
+        <Card
           sx={{
-            display: "grid",
-            gap: { xs: 2.5, md: 3 },
-            gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
+            border: "1px solid rgba(148,163,184,0.25)",
+            backgroundColor: "background.paper",
           }}
         >
-          <Stack spacing={1.5}>
-            <Typography variant="h6">План действий</Typography>
-            {[
-              {
-                title: "Оросительный кластер №3",
-                text: "Увеличить подачу воды на 12% на полях 17А и 22F в течение следующих 36 часов.",
-              },
-              {
-                title: "Полевой аудит",
-                text: "Запланировать выезд агрономов в Туркестанскую область до пятницы.",
-              },
-            ].map((item) => (
-              <Stack
-                key={item.title}
-                sx={{ borderRadius: 2, border: "1px solid rgba(148,163,184,0.2)", p: 2 }}
-                spacing={1}
-              >
-                <Typography variant="subtitle1">{item.title}</Typography>
-                <Typography color="text.secondary">{item.text}</Typography>
+          <CardContent>
+            <Stack spacing={2}>
+              <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between">
+                <Typography variant="h6">Мониторинг сельхозугодий</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {fieldsSnapshot.length} активных участков
+                </Typography>
               </Stack>
-            ))}
-          </Stack>
-        </Box>
+              {isMobileView ? (
+                <Stack spacing={1.5}>
+                  {fieldsSnapshot.map((field) => (
+                    <Box
+                      key={field.id}
+                      sx={{
+                        borderRadius: 2,
+                        border: "1px solid rgba(148,163,184,0.3)",
+                        p: 2,
+                      }}
+                    >
+                      <Stack spacing={1.5}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
+                          <Stack spacing={0.5}>
+                            <Typography fontWeight={600}>{field.name}</Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {field.region} · {field.crop}
+                            </Typography>
+                          </Stack>
+                          <Chip
+                            size="small"
+                            color={irrigationColor[field.irrigationStatus]}
+                            label={irrigationLabel[field.irrigationStatus]}
+                          />
+                        </Stack>
+                        <Stack spacing={1} direction="row" flexWrap="wrap" rowGap={1} columnGap={2}>
+                          <Stack>
+                            <Typography variant="caption" color="text.secondary">
+                              NDVI
+                            </Typography>
+                            <Typography variant="body2">{field.ndvi.toFixed(2)}</Typography>
+                          </Stack>
+                          <Stack>
+                            <Typography variant="caption" color="text.secondary">
+                              Влажность
+                            </Typography>
+                            <Typography variant="body2">{field.soilMoisture}%</Typography>
+                          </Stack>
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary">
+                          {field.forecast}
+                        </Typography>
+                        <Stack spacing={1}>
+                          <Typography variant="caption" color="text.secondary">
+                            Обновлено {field.lastUpdate}
+                          </Typography>
+                          <Button variant="outlined" size="small" fullWidth onClick={() => setSelectedId(field.id)}>
+                            Детали
+                          </Button>
+                        </Stack>
+                      </Stack>
+                    </Box>
+                  ))}
+                </Stack>
+              ) : (
+                <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
+                  <Table size="small" sx={{ minWidth: 720 }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Поле</TableCell>
+                        <TableCell>Культура</TableCell>
+                        <TableCell align="center">NDVI</TableCell>
+                        <TableCell align="center">Влажность</TableCell>
+                        <TableCell align="center">Орошение</TableCell>
+                        <TableCell>Прогноз</TableCell>
+                        <TableCell align="right">Обновлено</TableCell>
+                        <TableCell align="right">Действия</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {fieldsSnapshot.map((field) => (
+                        <TableRow hover key={field.id}>
+                          <TableCell>
+                            <Stack spacing={0.25}>
+                              <Typography fontWeight={600}>{field.name}</Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {field.region}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell>{field.crop}</TableCell>
+                          <TableCell align="center">{field.ndvi.toFixed(2)}</TableCell>
+                          <TableCell align="center">{field.soilMoisture}%</TableCell>
+                          <TableCell align="center">
+                            <Chip
+                              size="small"
+                              color={irrigationColor[field.irrigationStatus]}
+                              label={irrigationLabel[field.irrigationStatus]}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ maxWidth: 260 }}>
+                            <Typography variant="body2" color="text.secondary" noWrap>
+                              {field.forecast}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <Typography variant="caption" color="text.secondary">
+                              {field.lastUpdate}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={() => setSelectedId(field.id)}
+                            >
+                              Детали
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </Stack>
+          </CardContent>
+        </Card>
 
         <FieldDetailDrawer field={selectedField} open={Boolean(selectedId)} onClose={() => setSelectedId(undefined)} />
       </Stack>

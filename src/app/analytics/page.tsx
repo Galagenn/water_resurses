@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useState } from "react";
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Stack, Typography, Snackbar, Alert } from "@mui/material";
 import DateRangePicker from "@/components/shared/DateRangePicker";
 import RegionSelector from "@/components/shared/RegionSelector";
 import IrrigationEfficiencyChart from "@/components/charts/IrrigationEfficiencyChart";
@@ -17,14 +17,42 @@ import {
 } from "@/utils/dataGenerator";
 import { REGION_KEYS } from "@/constants/regions";
 import type { RegionKey } from "@/types/dashboard";
+import { useActionPlan } from "@/contexts/ActionPlanContext";
 
 const AnalyticsPage = () => {
   const [selectedPeriod, setSelectedPeriod] = useState(30);
   const [selectedRegions, setSelectedRegions] = useState<RegionKey[]>(REGION_KEYS);
+  const { addTask } = useActionPlan();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleRegionSelection = useCallback((ids: string[]) => {
     setSelectedRegions(ids.filter((id): id is RegionKey => REGION_KEYS.includes(id as RegionKey)));
   }, []);
+
+  const handleAddTaskFromRecommendation = useCallback(
+    (row: typeof regionPerformanceBase[0]) => {
+      // Маппинг русских названий регионов на RegionKey
+      const regionMap: Record<string, RegionKey | undefined> = {
+        "Алматинская область": "almaty",
+        "Жамбылская область": "zhambyl",
+        "Туркестанская область": "turkestan",
+        "Актюбинская область": "aktobe",
+      };
+
+      addTask({
+        title: `Рекомендация для региона ${row.region}`,
+        description: `Регион: ${row.region}\nИндекс роста: ${row.growthIndex}\nУрожайность: ${row.yield}\nРиск: ${row.riskLabel}\n\nРекомендация: ${row.recommendation}`,
+        priority: row.riskLevel,
+        source: "Аналитика",
+        region: regionMap[row.region],
+      });
+
+      setSnackbarMessage(`Задача для региона ${row.region} добавлена в план действий`);
+      setSnackbarOpen(true);
+    },
+    [addTask]
+  );
 
   const irrigationEfficiency = useMemo(
     () => generateIrrigationEfficiencyData(selectedPeriod),
@@ -97,9 +125,27 @@ const AnalyticsPage = () => {
             gridTemplateColumns: "1fr",
           }}
         >
-          <RegionPerformanceTable rows={regionPerformance} />
+          <RegionPerformanceTable
+            rows={regionPerformance}
+            onAddTask={handleAddTaskFromRecommendation}
+          />
         </Box>
       </Stack>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
