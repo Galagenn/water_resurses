@@ -47,7 +47,8 @@ const navigation = [
 const AppLayout = ({ children }: PropsWithChildren) => {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [desktopOpen, setDesktopOpen] = useState(false);
+  // Десктопное меню по умолчанию открыто
+  const [desktopOpen, setDesktopOpen] = useState(true);
 
   const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
   const handleDesktopDrawerToggle = () => setDesktopOpen((prev) => !prev);

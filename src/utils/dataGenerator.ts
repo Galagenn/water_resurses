@@ -111,9 +111,20 @@ const clampRegions = (regions?: RegionKey[]) => (regions && regions.length ? reg
 const formatNumber = (value: number, fractionDigits = 1) => Number(value.toFixed(fractionDigits));
 
 // Обновление summary cards на основе периода и выбранных регионов
+// ВАЖНО: значения должны заметно отличаться между, например, 7 и 14 днями
 export const generateSummaryCards = (days: number, regions?: RegionKey[]): DashboardSummaryCard[] => {
   const activeRegions = clampRegions(regions);
-  const periodFactor = clamp(days / 30, 0.75, 1.4);
+
+  // Нормализованный коэффициент периода:
+  // 7 дн ≈ 0.3, 14 дн ≈ 0.6, 30 дн ≈ 1, 90 дн ≈ 2
+  const normalized = clamp(days / 30, 0.25, 3);
+
+  // Отдельные факторы для разных метрик, чтобы 7 и 14 дней действительно отличались
+  const waterFactor = clamp(0.4 + normalized * 0.9, 0.4, 2.7); // сильнее зависит от периода
+  const coverageFactor = clamp(0.9 + (normalized - 1) * 0.12, 0.85, 1.15); // мягкое изменение
+  const yieldFactor = clamp(0.95 + (normalized - 1) * 0.1, 0.9, 1.25); // умеренное изменение
+  const alertsFactor = clamp(0.5 + normalized * 1.1, 0.5, 3); // больше период — больше алертов
+
   const stats = activeRegions.map((region) => regionSummaryStats[region]);
 
   type StatKey = keyof (typeof regionSummaryStats)[RegionKey];
@@ -121,74 +132,101 @@ export const generateSummaryCards = (days: number, regions?: RegionKey[]): Dashb
   const sumStat = (key: StatKey) => stats.reduce((sum, stat) => sum + stat[key], 0);
   const avgStat = (key: StatKey) => sumStat(key) / stats.length;
 
-  const buildBreakdown = (key: StatKey, formatter: (value: number) => string) =>
-    activeRegions.map((region) => ({
-      region,
-      label: REGION_META[region].label,
-      value: formatter(regionSummaryStats[region][key]),
-      color: REGION_META[region].color,
-    }));
+  const buildBreakdown = (key: StatKey, formatter: (value: number) => string, scale = 1) =>
+    activeRegions.map((region) => {
+      const baseValue = regionSummaryStats[region][key];
+      const scaledValue = baseValue * scale;
+      return {
+        region,
+        label: REGION_META[region].label,
+        value: formatter(scaledValue),
+        color: REGION_META[region].color,
+      };
+    });
 
-  const waterTotal = sumStat("water") * periodFactor;
-  const coverageAvg = avgStat("coverage");
-  const yieldAvg = avgStat("yield");
-  const alertsTotal = sumStat("alerts") * periodFactor;
-  const criticalAlerts = Math.round(sumStat("criticalAlerts") * periodFactor);
+  const waterTotal = sumStat("water") * waterFactor;
+  const coverageAvg = avgStat("coverage") * coverageFactor;
+  const yieldAvg = avgStat("yield") * yieldFactor;
+  const alertsTotal = sumStat("alerts") * alertsFactor;
+  const criticalAlerts = Math.round(sumStat("criticalAlerts") * alertsFactor);
 
   return [
     {
       id: "water",
       label: "Использование воды",
       value: `${waterTotal.toFixed(1)} млн м³`,
-      change: formatNumber(avgStat("waterChange")),
+      change: formatNumber(avgStat("waterChange") * waterFactor),
       emphasis: "positive",
       icon: "💧",
       footer: `Суммарно по ${activeRegions.length} регионам`,
-      breakdown: buildBreakdown("water", (value) => `${(value * periodFactor).toFixed(1)} млн м³`),
+      breakdown: buildBreakdown(
+        "water",
+        (value) => `${value.toFixed(1)} млн м³`,
+        waterFactor
+      ),
     },
     {
       id: "coverage",
       label: "Покрытие спутником",
-      value: `${coverageAvg.toFixed(1)}%`,
-      change: formatNumber(avgStat("coverageChange")),
+      value: `${clamp(coverageAvg, 0, 100).toFixed(1)}%`,
+      change: formatNumber(avgStat("coverageChange") * coverageFactor),
       emphasis: "positive",
       icon: "🛰️",
       footer: "Среднее покрытие по выбранным регионам",
-      breakdown: buildBreakdown("coverage", (value) => `${value.toFixed(1)}%`),
+      breakdown: buildBreakdown(
+        "coverage",
+        (value) => `${clamp(value, 0, 100).toFixed(1)}%`,
+        coverageFactor
+      ),
     },
     {
       id: "yield",
       label: "Прогноз урожайности",
       value: `${yieldAvg.toFixed(1)} ц/га`,
-      change: formatNumber(avgStat("yieldChange")),
+      change: formatNumber(avgStat("yieldChange") * yieldFactor),
       emphasis: "neutral",
       icon: "🌾",
       footer: "Средний прогноз по культурам",
-      breakdown: buildBreakdown("yield", (value) => `${value.toFixed(1)} ц/га`),
+      breakdown: buildBreakdown(
+        "yield",
+        (value) => `${value.toFixed(1)} ц/га`,
+        yieldFactor
+      ),
     },
     {
       id: "alerts",
       label: "Активные оповещения",
       value: Math.round(alertsTotal),
-      change: formatNumber(avgStat("alertsChange")),
+      change: formatNumber(avgStat("alertsChange") * alertsFactor),
       emphasis: "negative",
       icon: "⚠️",
       footer: `${criticalAlerts} критических аномалий`,
-      breakdown: buildBreakdown("alerts", (value) => `${Math.round(value * periodFactor)} опов.`),
+      breakdown: buildBreakdown(
+        "alerts",
+        (value) => `${Math.round(value)} опов.`,
+        alertsFactor
+      ),
     },
   ];
 };
 
 // Фильтрация оповещений по периоду
 export const filterAlertsByPeriod = (alerts: AlertItem[], days: number): AlertItem[] => {
-  const endDate = getUTCBaseDate();
-  const startDate = shiftUTCDate(endDate, days);
+  if (!alerts.length) return [];
 
-  return alerts.filter((alert) => {
+  // Используем "виртуальное сейчас" как максимальную дату среди алертов,
+  // чтобы данные не пропадали из-за того, что mock-даты в прошлом
+  const alertDates = alerts.map((alert) => {
     const [datePart] = alert.timestamp.split(" ");
     const [day, month, year] = datePart.split(".").map(Number);
-    const alertDate = new Date(Date.UTC(year, month - 1, day));
+    return new Date(Date.UTC(year, month - 1, day));
+  });
 
+  const endDate = new Date(Math.max(...alertDates.map((d) => d.getTime())));
+  const startDate = shiftUTCDate(endDate, days);
+
+  return alerts.filter((alert, index) => {
+    const alertDate = alertDates[index];
     return alertDate >= startDate && alertDate <= endDate;
   });
 };

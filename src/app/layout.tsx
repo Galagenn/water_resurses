@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <MuiThemeProvider>
           <ActionPlanProvider>
-            <AppLayout>{children}</AppLayout>
+          <AppLayout>{children}</AppLayout>
           </ActionPlanProvider>
         </MuiThemeProvider>
       </body>

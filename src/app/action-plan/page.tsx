@@ -56,6 +56,11 @@ const ActionPlanPage = () => {
     description: '',
     priority: 'medium' as 'low' | 'medium' | 'high',
   });
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+  const [statusDialogTask, setStatusDialogTask] = useState<ActionPlanTask | null>(null);
+  const [nextStatus, setNextStatus] = useState<ActionPlanTask['status']>('in_progress');
+  const [statusNote, setStatusNote] = useState('');
+  const [attachmentName, setAttachmentName] = useState<string | undefined>();
 
   const filteredTasks = useMemo(() => {
     if (filter === 'all') return tasks;
@@ -75,14 +80,55 @@ const ActionPlanPage = () => {
     }
   };
 
-  const handleStatusChange = (taskId: string, currentStatus: ActionPlanTask['status']) => {
-    if (currentStatus === 'pending') {
-      updateTask(taskId, { status: 'in_progress' });
-    } else if (currentStatus === 'in_progress') {
-      completeTask(taskId);
+  const openStatusDialog = (task: ActionPlanTask, targetStatus: ActionPlanTask['status']) => {
+    setStatusDialogTask(task);
+    setNextStatus(targetStatus);
+    setStatusNote('');
+    setAttachmentName(undefined);
+    setStatusDialogOpen(true);
+  };
+
+  const handleStatusIconClick = (task: ActionPlanTask) => {
+    if (task.status === 'pending') {
+      // Переход в работу — запрашиваем опциональный комментарий и файл
+      openStatusDialog(task, 'in_progress');
+    } else if (task.status === 'in_progress') {
+      // Переход в завершено — тоже через диалог
+      openStatusDialog(task, 'completed');
     } else {
-      updateTask(taskId, { status: 'pending' });
+      // Возврат в ожидание можно делать без диалога
+      updateTask(task.id, { status: 'pending' });
     }
+  };
+
+  const handleConfirmStatusChange = () => {
+    if (!statusDialogTask) return;
+
+    const updates: Partial<ActionPlanTask> = {
+      status: nextStatus,
+    };
+
+    if (statusNote.trim()) {
+      updates.statusNote = statusNote.trim();
+    }
+    if (attachmentName) {
+      updates.attachmentName = attachmentName;
+    }
+
+    if (nextStatus === 'completed') {
+      completeTask(statusDialogTask.id);
+      if (updates.statusNote || updates.attachmentName) {
+        // дополняем завершённую задачу метаданными
+        updateTask(statusDialogTask.id, updates);
+      }
+    } else {
+      updateTask(statusDialogTask.id, updates);
+    }
+
+    setStatusDialogOpen(false);
+    setStatusDialogTask(null);
+    setStatusNote('');
+    setAttachmentName(undefined);
   };
 
   const stats = useMemo(() => {
@@ -233,7 +279,7 @@ const ActionPlanPage = () => {
                     >
                       <Stack direction="row" spacing={2} alignItems="center" sx={{ flex: 1 }}>
                         <IconButton
-                          onClick={() => handleStatusChange(task.id, task.status)}
+                          onClick={() => handleStatusIconClick(task)}
                           color={
                             task.status === 'completed'
                               ? 'success'
@@ -297,33 +343,48 @@ const ActionPlanPage = () => {
                         </IconButton>
                       </Stack>
                     </Stack>
-                    <Stack
-                      direction={{ xs: 'column', sm: 'row' }}
-                      spacing={1}
-                      sx={{ pt: 1, borderTop: '1px solid rgba(148,163,184,0.2)' }}
-                    >
-                      <Typography variant="caption" color="text.secondary">
-                        Создано: {formatDate(task.createdAt)}
-                      </Typography>
-                      {task.source && (
-                        <>
-                          <Typography variant="caption" color="text.secondary">
-                            •
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            Источник: {task.source}
-                          </Typography>
-                        </>
-                      )}
-                      {task.region && (
-                        <>
-                          <Typography variant="caption" color="text.secondary">
-                            •
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            Регион: {task.region}
-                          </Typography>
-                        </>
+                    <Stack spacing={0.5} sx={{ pt: 1, borderTop: '1px solid rgba(148,163,184,0.2)' }}>
+                      <Stack
+                        direction={{ xs: 'column', sm: 'row' }}
+                        spacing={1}
+                      >
+                        <Typography variant="caption" color="text.secondary">
+                          Создано: {formatDate(task.createdAt)}
+                        </Typography>
+                        {task.source && (
+                          <>
+                            <Typography variant="caption" color="text.secondary">
+                              •
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              Источник: {task.source}
+                            </Typography>
+                          </>
+                        )}
+                        {task.region && (
+                          <>
+                            <Typography variant="caption" color="text.secondary">
+                              •
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              Регион: {task.region}
+                            </Typography>
+                          </>
+                        )}
+                      </Stack>
+                      {(task.statusNote || task.attachmentName) && (
+                        <Stack spacing={0.5}>
+                          {task.statusNote && (
+                            <Typography variant="caption" color="text.secondary">
+                              Комментарий: {task.statusNote}
+                            </Typography>
+                          )}
+                          {task.attachmentName && (
+                            <Typography variant="caption" color="text.secondary">
+                              Файл: {task.attachmentName}
+                            </Typography>
+                          )}
+                        </Stack>
                       )}
                     </Stack>
                   </Stack>
@@ -376,6 +437,48 @@ const ActionPlanPage = () => {
           <Button onClick={() => setOpenDialog(false)}>Отмена</Button>
           <Button onClick={handleAddTask} variant="contained" disabled={!newTask.title.trim()}>
             Добавить
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={statusDialogOpen} onClose={() => setStatusDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {nextStatus === 'in_progress' ? 'Принять задачу в работу' : 'Завершить задачу'}
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            {statusDialogTask && (
+              <Typography variant="subtitle1">{statusDialogTask.title}</Typography>
+            )}
+            <TextField
+              label="Комментарий (опционально)"
+              fullWidth
+              multiline
+              rows={3}
+              value={statusNote}
+              onChange={(e) => setStatusNote(e.target.value)}
+            />
+            <Button
+              variant="outlined"
+              component="label"
+              sx={{ justifyContent: 'flex-start' }}
+            >
+              {attachmentName ? `Файл: ${attachmentName}` : 'Прикрепить файл (опционально)'}
+              <input
+                type="file"
+                hidden
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  setAttachmentName(file ? file.name : undefined);
+                }}
+              />
+            </Button>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setStatusDialogOpen(false)}>Отмена</Button>
+          <Button onClick={handleConfirmStatusChange} variant="contained">
+            Подтвердить
           </Button>
         </DialogActions>
       </Dialog>

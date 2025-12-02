@@ -130,5 +130,8 @@ export type ActionPlanTask = {
   source?: string; // Источник задачи (например, "Аналитика")
   region?: RegionKey;
   relatedFieldId?: string;
+  // Дополнительные данные при смене статуса
+  statusNote?: string; // последний комментарий при переводе в работу/завершение
+  attachmentName?: string; // имя прикреплённого файла (для фронтенд-мока без реального загрузчика)
 };
 
