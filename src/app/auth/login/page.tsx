@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -15,7 +15,7 @@ import {
   Alert,
 } from "@mui/material";
 
-export default function LoginPage() {
+const LoginForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -141,6 +141,14 @@ export default function LoginPage() {
         </Card>
       </Box>
     </Container>
+  );
+};
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }
 
