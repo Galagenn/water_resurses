@@ -45,6 +45,9 @@ importers:
         specifier: ^5.1.6
         version: 5.1.6(@babel/core@7.28.5)(react@19.2.0)
     devDependencies:
+      '@types/geojson':
+        specifier: ^7946.0.16
+        version: 7946.0.16
       '@types/leaflet':
         specifier: ^1.9.21
         version: 1.9.21
