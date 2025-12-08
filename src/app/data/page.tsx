@@ -84,20 +84,27 @@ const DataPage = () => {
   return (
     <Container
       maxWidth={false}
-      sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5, md: 0 } }}
+      sx={{ maxWidth: 1440, px: { xs: 0.75, sm: 2, md: 0 } }}
     >
-      <Stack spacing={{ xs: 3, md: 4 }}>
+      <Stack spacing={{ xs: 1, sm: 2, md: 4 }}>
         <Stack
           direction={{ xs: "column", lg: "row" }}
           justifyContent="space-between"
           alignItems={{ xs: "flex-start", lg: "center" }}
-          spacing={{ xs: 2, lg: 3 }}
+          spacing={{ xs: 1, lg: 3 }}
         >
-          <Stack spacing={0.5}>
-            <Typography variant="subtitle2" color="text.secondary">
+          <Stack spacing={0.125}>
+            <Typography 
+              variant="subtitle2" 
+              color="text.secondary"
+              sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}
+            >
               Управление данными
             </Typography>
-            <Typography variant="h4">
+            <Typography 
+              variant="h4"
+              sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.125rem" } }}
+            >
               Анонимизация, очистка и подготовка данных
             </Typography>
           </Stack>
@@ -119,7 +126,7 @@ const DataPage = () => {
           </Stack>
         </Stack>
 
-        <Grid container spacing={{ xs: 2, md: 3 }}>
+        <Grid container spacing={{ xs: 1, sm: 1.5, md: 3 }}>
           {dataStats.map((stat) => (
             <Grid item xs={6} sm={3} key={stat.label}>
               <Card
@@ -129,11 +136,11 @@ const DataPage = () => {
                   border: "1px solid rgba(148,163,184,0.1)",
                 }}
               >
-                <CardContent>
-                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}>
                     {stat.label}
                   </Typography>
-                  <Typography variant="h5" color={`${stat.color}.main`}>
+                  <Typography variant="h5" color={`${stat.color}.main`} sx={{ fontSize: { xs: "1rem", sm: "1.5rem", md: "1.75rem" } }}>
                     {stat.value}
                   </Typography>
                 </CardContent>
@@ -142,8 +149,8 @@ const DataPage = () => {
           ))}
         </Grid>
 
-        <Stack spacing={2.5}>
-          <Typography variant="h6">Этапы обработки данных</Typography>
+        <Stack spacing={{ xs: 1, sm: 1.5, md: 2.5 }}>
+          <Typography variant="h6" sx={{ fontSize: { xs: "0.875rem", sm: "1.25rem" } }}>Этапы обработки данных</Typography>
           {processingSteps.map((step, index) => (
             <Card
               key={step.title}
@@ -154,8 +161,8 @@ const DataPage = () => {
                   : "rgba(148,163,184,0.05)",
               }}
             >
-              <CardContent>
-                <Stack spacing={2}>
+              <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+                <Stack spacing={{ xs: 1, sm: 1.5, md: 2 }}>
                   <Stack
                     direction={{ xs: "column", sm: "row" }}
                     justifyContent="space-between"

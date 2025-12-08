@@ -32,13 +32,14 @@ const IrrigationEfficiencyChart = ({ data, visibleRegions }: Props) => {
     >
       <CardContent
         sx={{
-          height: { xs: 280, sm: 320, md: 360 },
+          height: { xs: 220, sm: 300, md: 360 },
           display: "flex",
           flexDirection: "column",
-          gap: 2,
+          gap: { xs: 0.75, sm: 2 },
+          p: { xs: 1, sm: 2 },
         }}
       >
-        <Typography variant="h6">Эффективность орошения по регионам</Typography>
+        <Typography variant="h6" sx={{ fontSize: { xs: "0.8rem", sm: "1.25rem" } }}>Эффективность орошения по регионам</Typography>
       <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
@@ -92,7 +93,7 @@ const IrrigationEfficiencyChart = ({ data, visibleRegions }: Props) => {
                 stroke={REGION_META[key].color}
                 strokeWidth={2.5}
                 dot={{ r: 3 }}
-                activeDot={{ r: 5 }}
+                activeDot={{ r: 5, fill: REGION_META[key].color, stroke: 'none' }}
                 isAnimationActive={false}
               />
             ))}

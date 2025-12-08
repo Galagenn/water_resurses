@@ -15,25 +15,31 @@ const riskColor: Record<ForecastItem["riskLevel"], string> = {
 
 const ForecastPanel = ({ items }: ForecastPanelProps) => (
   <Card sx={{ height: "100%" }}>
-    <CardContent>
-      <Stack spacing={2}>
+    <CardContent
+      sx={{
+        p: { xs: 1, sm: 2 },
+        pl: { xs: 1.25, sm: 2.25 }, // небольшой внутренний отступ слева на мобиле
+      }}
+    >
+      <Stack spacing={{ xs: 1, sm: 1.5, md: 2 }}>
         <Stack
           direction={{ xs: "column", sm: "row" }}
           justifyContent="space-between"
           alignItems={{ xs: "flex-start", sm: "center" }}
-          spacing={1.5}
+          spacing={1}
         >
-          <Typography variant="h6">AI-прогноз по регионам</Typography>
-          <Chip size="small" label="Обновлено 15 мин назад" color="primary" variant="outlined" />
+          <Typography variant="h6" sx={{ fontSize: { xs: "0.875rem", sm: "1.25rem" } }}>AI-прогноз по регионам</Typography>
+          <Chip size="small" label="Обновлено 15 мин назад" color="primary" variant="outlined" sx={{ fontSize: { xs: "0.65rem", sm: "0.75rem" } }} />
         </Stack>
         {items.map((item) => (
           <Stack
             key={item.id}
-            spacing={1}
+            spacing={0.75}
             sx={{
               border: "1px solid rgba(148,163,184,0.2)",
-              borderRadius: 2,
-              p: 1.5,
+              borderRadius: { xs: 1, sm: 1.5, md: 2 },
+              p: { xs: 1, sm: 1.5 },
+              pl: { xs: 1.25, sm: 1.75 }, // чуть меньше ради выравнивания с заголовком
             }}
           >
             <Stack

@@ -35,13 +35,14 @@ const VegetationTrendChart = ({ data, visibleRegions }: Props) => {
     >
       <CardContent
         sx={{
-          height: { xs: 340, sm: 360, md: 380 },
+          height: { xs: 260, sm: 340, md: 380 },
           display: "flex",
           flexDirection: "column",
-          gap: 1.5,
+          gap: { xs: 0.75, sm: 1.5 },
+          p: { xs: 1, sm: 2 },
         }}
       >
-        <Typography variant="h6">Индексы вегетации (NDVI / EVI)</Typography>
+        <Typography variant="h6" sx={{ fontSize: { xs: "0.8rem", sm: "1.25rem" } }}>Индексы вегетации (NDVI / EVI)</Typography>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 20 }}>
             <CartesianGrid stroke="rgba(148,163,184,0.2)" strokeDasharray="4 4" />

@@ -70,20 +70,29 @@ const AnalyticsPage = () => {
   return (
     <Container
       maxWidth={false}
-      sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5, md: 0 } }}
+      sx={{ maxWidth: 1440, px: { xs: 0.75, sm: 2, md: 0 } }}
     >
-      <Stack spacing={{ xs: 3, md: 4 }}>
+      <Stack spacing={{ xs: 1, sm: 2, md: 4 }}>
         <Stack
           direction={{ xs: "column", lg: "row" }}
           justifyContent="space-between"
           alignItems={{ xs: "flex-start", lg: "center" }}
-          spacing={{ xs: 2, lg: 3 }}
+          spacing={{ xs: 1, lg: 3 }}
         >
-          <Stack spacing={0.5}>
-            <Typography variant="subtitle2" color="text.secondary">
+          <Stack spacing={0.125}>
+            <Typography 
+              variant="subtitle2" 
+              color="text.secondary"
+              sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}
+            >
               Детальная аналитика
             </Typography>
-            <Typography variant="h4">Сценарии орошения и вегетации</Typography>
+            <Typography 
+              variant="h4"
+              sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.125rem" } }}
+            >
+              Сценарии орошения и вегетации
+            </Typography>
           </Stack>
           <Stack
             direction={{ xs: "column", sm: "row" }}
@@ -107,7 +116,7 @@ const AnalyticsPage = () => {
           </Stack>
         </Stack>
 
-        <Stack spacing={{ xs: 2.5, md: 3 }}>
+        <Stack spacing={{ xs: 1, sm: 2, md: 3 }}>
           <IrrigationEfficiencyChart
             data={irrigationEfficiency}
             visibleRegions={selectedRegions}
@@ -121,7 +130,7 @@ const AnalyticsPage = () => {
         <Box
           sx={{
             display: "grid",
-            gap: { xs: 2.5, md: 3 },
+            gap: { xs: 1, sm: 2, md: 3 },
             gridTemplateColumns: "1fr",
           }}
         >

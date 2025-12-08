@@ -154,20 +154,29 @@ const ActionPlanPage = () => {
   return (
     <Container
       maxWidth={false}
-      sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5, md: 0 } }}
+      sx={{ maxWidth: 1440, px: { xs: 0.75, sm: 2, md: 0 } }}
     >
-      <Stack spacing={{ xs: 3, md: 4 }}>
+      <Stack spacing={{ xs: 1, sm: 2, md: 4 }}>
         <Stack
           direction={{ xs: 'column', lg: 'row' }}
           justifyContent="space-between"
           alignItems={{ xs: 'flex-start', lg: 'center' }}
-          spacing={{ xs: 2, lg: 3 }}
+          spacing={{ xs: 1, lg: 3 }}
         >
-          <Stack spacing={0.5}>
-            <Typography variant="subtitle2" color="text.secondary">
+          <Stack spacing={0.125}>
+            <Typography 
+              variant="subtitle2" 
+              color="text.secondary"
+              sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}
+            >
               Управление задачами
             </Typography>
-            <Typography variant="h4">План действий</Typography>
+            <Typography 
+              variant="h4"
+              sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.125rem" } }}
+            >
+              План действий
+            </Typography>
           </Stack>
           <Button
             variant="contained"
@@ -182,7 +191,7 @@ const ActionPlanPage = () => {
         <Box
           sx={{
             display: 'grid',
-            gap: 2,
+            gap: { xs: 1, sm: 1.5, md: 2 },
             gridTemplateColumns: {
               xs: '1fr',
               sm: 'repeat(2, minmax(0, 1fr))',
@@ -191,39 +200,39 @@ const ActionPlanPage = () => {
           }}
         >
           <Card>
-            <CardContent>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+              <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}>
                 Всего задач
               </Typography>
-              <Typography variant="h4">{stats.total}</Typography>
+              <Typography variant="h4" sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.125rem" } }}>{stats.total}</Typography>
             </CardContent>
           </Card>
           <Card>
-            <CardContent>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+              <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}>
                 Ожидают
               </Typography>
-              <Typography variant="h4" color="warning.main">
+              <Typography variant="h4" color="warning.main" sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.125rem" } }}>
                 {stats.pending}
               </Typography>
             </CardContent>
           </Card>
           <Card>
-            <CardContent>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+              <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}>
                 В работе
               </Typography>
-              <Typography variant="h4" color="info.main">
+              <Typography variant="h4" color="info.main" sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.125rem" } }}>
                 {stats.inProgress}
               </Typography>
             </CardContent>
           </Card>
           <Card>
-            <CardContent>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+              <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}>
                 Завершено
               </Typography>
-              <Typography variant="h4" color="success.main">
+              <Typography variant="h4" color="success.main" sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.125rem" } }}>
                 {stats.completed}
               </Typography>
             </CardContent>
@@ -255,11 +264,11 @@ const ActionPlanPage = () => {
           </FormControl>
         </Box>
 
-        <Stack spacing={2}>
+        <Stack spacing={{ xs: 1, sm: 1.5, md: 2 }}>
           {filteredTasks.length === 0 ? (
             <Card>
-              <CardContent>
-                <Typography variant="body1" color="text.secondary" align="center" sx={{ py: 4 }}>
+              <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+                <Typography variant="body1" color="text.secondary" align="center" sx={{ py: { xs: 2, sm: 3, md: 4 }, fontSize: { xs: "0.875rem", sm: "1rem" } }}>
                   {filter === 'all'
                     ? 'Нет задач. Добавьте первую задачу для начала работы.'
                     : `Нет задач со статусом "${statusLabels[filter]}".`}
@@ -269,13 +278,13 @@ const ActionPlanPage = () => {
           ) : (
             filteredTasks.map((task) => (
               <Card key={task.id}>
-                <CardContent>
-                  <Stack spacing={2}>
+              <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+                <Stack spacing={{ xs: 1, sm: 1.5, md: 2 }}>
                     <Stack
                       direction={{ xs: 'column', sm: 'row' }}
                       justifyContent="space-between"
                       alignItems={{ xs: 'flex-start', sm: 'center' }}
-                      spacing={2}
+                      spacing={{ xs: 1, sm: 1.5, md: 2 }}
                     >
                       <Stack direction="row" spacing={2} alignItems="center" sx={{ flex: 1 }}>
                         <IconButton

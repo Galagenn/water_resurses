@@ -54,11 +54,11 @@ const MultiRegionChart = ({
 
   return (
     <Card sx={{ height: '100%' }}>
-      <CardContent sx={{ height: { xs: 280, sm: 320, md: 360 } }}>
-        <Typography variant="h6" mb={0.5}>
+      <CardContent sx={{ height: { xs: 220, sm: 300, md: 360 }, p: { xs: 1, sm: 2 } }}>
+        <Typography variant="h6" mb={0.5} sx={{ fontSize: { xs: "0.8rem", sm: "1.25rem" } }}>
           {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary" mb={2}>
+        <Typography variant="body2" color="text.secondary" mb={2} sx={{ fontSize: { xs: "0.7rem", sm: "0.875rem" } }}>
           Значения, {unit}
         </Typography>
 
@@ -85,7 +85,7 @@ const MultiRegionChart = ({
                 stroke={config.color}
                 strokeWidth={2}
                 dot={{ r: 3 }}
-                activeDot={{ r: 5 }}
+                activeDot={{ r: 5, fill: config.color, stroke: 'none' }}
                 isAnimationActive={false}
                 connectNulls
               />

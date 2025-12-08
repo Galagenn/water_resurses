@@ -32,13 +32,14 @@ const SeasonalTrendsChart = ({ data, visibleRegions }: Props) => {
     >
       <CardContent
         sx={{
-          height: { xs: 280, sm: 320, md: 380 },
+          height: { xs: 220, sm: 300, md: 380 },
           display: "flex",
           flexDirection: "column",
-          gap: 2,
+          gap: { xs: 0.75, sm: 2 },
+          p: { xs: 1, sm: 2 },
         }}
       >
-        <Typography variant="h6">Сезонная динамика NDVI по регионам</Typography>
+        <Typography variant="h6" sx={{ fontSize: { xs: "0.8rem", sm: "1.25rem" } }}>Сезонная динамика NDVI по регионам</Typography>
       <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}

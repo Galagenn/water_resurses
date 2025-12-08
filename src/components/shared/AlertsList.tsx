@@ -27,10 +27,10 @@ const severityColor: Record<AlertItem["severity"], string> = {
 
 const AlertsList = ({ alerts }: AlertsListProps) => (
   <Card sx={{ height: "100%" }}>
-    <CardContent>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h6">Активные аномалии</Typography>
-        <Chip label="Журнал" size="small" variant="outlined" />
+    <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={{ xs: 1, sm: 1.5, md: 2 }}>
+        <Typography variant="h6" sx={{ fontSize: { xs: "0.875rem", sm: "1.25rem" } }}>Активные аномалии</Typography>
+        <Chip label="Журнал" size="small" variant="outlined" sx={{ fontSize: { xs: "0.65rem", sm: "0.75rem" } }} />
       </Stack>
       <List disablePadding>
         {alerts.map((alert) => (

@@ -45,19 +45,28 @@ const FieldsPage = () => {
   );
 
   return (
-    <Container maxWidth={false} sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5, md: 0 } }}>
-      <Stack spacing={{ xs: 3, md: 4 }}>
+    <Container maxWidth={false} sx={{ maxWidth: 1440, px: { xs: 0.75, sm: 2, md: 0 } }}>
+      <Stack spacing={{ xs: 1, sm: 2, md: 4 }}>
         <Stack
           direction={{ xs: "column", lg: "row" }}
           justifyContent="space-between"
           alignItems={{ xs: "flex-start", lg: "center" }}
-          spacing={{ xs: 2, lg: 3 }}
+          spacing={{ xs: 1, lg: 3 }}
         >
-          <Stack spacing={0.5}>
-            <Typography variant="subtitle2" color="text.secondary">
+          <Stack spacing={0.125}>
+            <Typography 
+              variant="subtitle2" 
+              color="text.secondary"
+              sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}
+            >
               Управление полями
             </Typography>
-            <Typography variant="h4">Мониторинг сельхозугодий</Typography>
+            <Typography 
+              variant="h4"
+              sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.125rem" } }}
+            >
+              Мониторинг сельхозугодий
+            </Typography>
           </Stack>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} width="100%" maxWidth={360}>
 
@@ -71,28 +80,29 @@ const FieldsPage = () => {
           sx={{
             border: "1px solid rgba(148,163,184,0.25)",
             backgroundColor: "background.paper",
+            borderRadius: { xs: 1, sm: 1.5, md: 2 },
           }}
         >
-          <CardContent>
-            <Stack spacing={2}>
+          <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+            <Stack spacing={{ xs: 1, sm: 1.5, md: 2 }}>
               <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between">
-                <Typography variant="h6">Мониторинг сельхозугодий</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h6" sx={{ fontSize: { xs: "0.875rem", sm: "1.25rem" } }}>Мониторинг сельхозугодий</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: "0.7rem", sm: "0.875rem" } }}>
                   {fieldsSnapshot.length} активных участков
                 </Typography>
               </Stack>
               {isMobileView ? (
-                <Stack spacing={1.5}>
+                <Stack spacing={1}>
                   {fieldsSnapshot.map((field) => (
                     <Box
                       key={field.id}
                       sx={{
-                        borderRadius: 2,
+                        borderRadius: { xs: 1, sm: 1.5, md: 2 },
                         border: "1px solid rgba(148,163,184,0.3)",
-                        p: 2,
+                        p: { xs: 1, sm: 1.5, md: 2 },
                       }}
                     >
-                      <Stack spacing={1.5}>
+                      <Stack spacing={1}>
                         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
                           <Stack spacing={0.5}>
                             <Typography fontWeight={600}>{field.name}</Typography>

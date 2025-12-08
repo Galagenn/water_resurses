@@ -34,8 +34,8 @@ import {
 
 export default function DashboardPage() {
   const isCompact = useMediaQuery("(max-width:708px)");
-  const containerPadding = isCompact ? 1.25 : 2;
-  const sectionGap = { xs: 2.5, md: 3 };
+  const containerPadding = isCompact ? 0.75 : 2;
+  const sectionGap = { xs: 1, sm: 2, md: 3 };
   const [selectedPeriod, setSelectedPeriod] = useState(30);
   const [selectedRegions, setSelectedRegions] = useState<RegionKey[]>(REGION_KEYS);
 
@@ -63,20 +63,24 @@ export default function DashboardPage() {
         px: { xs: containerPadding, sm: 2.5, md: 0 },
       }}
     >
-      <Stack spacing={{ xs: 3, md: 4 }}>
+      <Stack spacing={{ xs: 1, sm: 2, md: 4 }}>
         <Stack
           direction={{ xs: "column", lg: "row" }}
           justifyContent="space-between"
           alignItems={{ xs: "flex-start", lg: "center" }}
-          spacing={{ xs: 2.5, lg: 4 }}
+          spacing={{ xs: 1, lg: 4 }}
         >
-          <Stack spacing={0.5}>
-            <Typography variant="subtitle2" color="text.secondary">
+          <Stack spacing={0.125}>
+            <Typography 
+              variant="subtitle2" 
+              color="text.secondary"
+              sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}
+            >
               Интерактивный мониторинг
             </Typography>
             <Typography
               variant="h4"
-              sx={{ fontSize: { xs: "1.875rem", md: "2.25rem" }, lineHeight: 1.2 }}
+              sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.25rem" }, lineHeight: 1.2 }}
             >
               Дашборд ИИ-агента
             </Typography>
@@ -84,16 +88,16 @@ export default function DashboardPage() {
           <Box
             sx={{
               width: "100%",
-              borderRadius: 2,
+              borderRadius: { xs: 1, sm: 1.5, md: 2 },
               border: "1px solid rgba(148,163,184,0.2)",
               bgcolor: "rgba(15,23,42,0.75)",
-              p: { xs: 2, sm: 2.5 },
+              p: { xs: 1, sm: 2 },
               boxShadow: { xs: "0 15px 40px rgba(2,6,23,0.45)", sm: "none" },
             }}
           >
             <Stack
               direction={{ xs: "column", sm: "row" }}
-              spacing={{ xs: 2, sm: 2.5 }}
+              spacing={{ xs: 1, sm: 2 }}
               alignItems={{ xs: "stretch", sm: "flex-end" }}
             >
               <Box sx={{ flex: 1 }}>

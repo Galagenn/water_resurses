@@ -1,3 +1,5 @@
+import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
+
 export type DashboardSummaryCard = {
   id: string;
   label: string;
@@ -134,4 +136,22 @@ export type ActionPlanTask = {
   statusNote?: string; // последний комментарий при переводе в работу/завершение
   attachmentName?: string; // имя прикреплённого файла (для фронтенд-мока без реального загрузчика)
 };
+
+export type MapFeatureProperties = {
+  id: string;
+  name: string;
+  region?: RegionKey;
+  crop?: string;
+  irrigationType?: string;
+  issue?: string;
+  forecast?: string;
+  severity?: "warning" | "critical";
+  note?: string;
+  fill?: string;
+};
+
+export type MapFeatureCollection = FeatureCollection<
+  Polygon | MultiPolygon,
+  MapFeatureProperties
+>;
 

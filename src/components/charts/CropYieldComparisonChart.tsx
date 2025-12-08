@@ -65,8 +65,8 @@ const CropYieldComparisonChart = ({ data, visibleRegions }: Props) => {
         border: "1px solid rgba(148,163,184,0.25)",
       }}
     >
-      <CardContent sx={{ height: { xs: 300, sm: 340, md: 380 }, display: "flex", flexDirection: "column", gap: 2 }}>
-        <Typography variant="h6">Сравнение урожайности (ц/га)</Typography>
+      <CardContent sx={{ height: { xs: 240, sm: 320, md: 380 }, display: "flex", flexDirection: "column", gap: { xs: 0.75, sm: 2 }, p: { xs: 1, sm: 2 } }}>
+        <Typography variant="h6" sx={{ fontSize: { xs: "0.8rem", sm: "1.25rem" } }}>Сравнение урожайности (ц/га)</Typography>
 
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={filteredData} margin={{ top: 16, right: 16, left: 8, bottom: 12 }}>

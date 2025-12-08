@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Grid from "@mui/material/GridLegacy";
 import {
   Avatar,
@@ -10,7 +11,6 @@ import {
   CardContent,
   CardHeader,
   Chip,
-  Container,
   Divider,
   FormControl,
   InputLabel,
@@ -41,26 +41,71 @@ const sessions = [
 ];
 
 const AccountPage = () => {
+  const router = useRouter();
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState("Алматы");
+  const [logoutLoading, setLogoutLoading] = useState(false);
+
+  const handleLogout = async () => {
+    setLogoutLoading(true);
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        router.push("/auth/login");
+        router.refresh();
+      } else {
+        console.error("Ошибка при выходе");
+        setLogoutLoading(false);
+      }
+    } catch (error) {
+      console.error("Ошибка при выходе:", error);
+      setLogoutLoading(false);
+    }
+  };
 
   return (
-    <Container maxWidth={false} sx={{ maxWidth: 1440, px: { xs: 1.25, sm: 2.5 } }}>
-      <Stack spacing={{ xs: 3, md: 4 }}>
-        <Stack spacing={0.5}>
-          <Typography variant="subtitle2" color="text.secondary">
+    <Box sx={{ width: "100%", maxWidth: 1440, mx: 'auto', px: { xs: 0.75, sm: 2 } }}>
+      <Box className="account-page" sx={{ width: "100%", maxWidth: "100%" }}>
+        <Stack spacing={{ xs: 1, sm: 2, md: 4 }}>
+        <Stack spacing={0.125}>
+          <Typography 
+            variant="subtitle2" 
+            color="text.secondary"
+            sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}
+          >
             Управление доступом
           </Typography>
-          <Typography variant="h4">Учетная запись и безопасность</Typography>
+          <Typography 
+            variant="h4"
+            sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2.125rem" } }}
+          >
+            Учетная запись и безопасность
+          </Typography>
         </Stack>
 
-        <Grid container spacing={{ xs: 2.5, md: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Grid container spacing={{ xs: 2.5, md: 3 }} sx={{ maxWidth: '100%', width: '100%' }}>
           <Grid item xs={12} md={8}>
-            <Card sx={{ overflow: 'hidden', width: '100%', maxWidth: '100%' }}>
+            <Card
+              sx={{
+                overflow: "hidden",
+                width: "100%",
+                maxWidth: "100%",
+              }}
+            >
               <CardHeader title="Профиль пользователя" />
-              <CardContent sx={{ overflow: 'hidden', overflowX: 'hidden', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-                <Stack spacing={3}>
+              <CardContent
+                sx={{
+                  width: "100%",
+                  maxWidth: "100%",
+                  boxSizing: "border-box",
+                }}
+              >
+                <Stack spacing={6}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Avatar sx={{ width: 64, height: 64, fontSize: 28 }}>G</Avatar>
                     <Stack spacing={0.5}>
@@ -73,24 +118,46 @@ const AccountPage = () => {
                     </Stack>
                   </Stack>
 
-                  <Box sx={{ width: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
+                  <Box sx={{ width: "100%", boxSizing: "border-box" }}>
                     <Grid container spacing={2.5}>
-                      <Grid item xs={12} sm={6} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
-                        <TextField label="Имя" fullWidth defaultValue="Гала" />
+                      <Grid item xs={12} sm={6} sx={{ minWidth: 0, boxSizing: "border-box" }}>
+                        <TextField 
+                          label="Имя" 
+                          fullWidth 
+                          defaultValue="Гала" 
+                          variant="outlined"
+                        />
                       </Grid>
                       <Grid item xs={12} sm={6} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
-                        <TextField label="Фамилия" fullWidth defaultValue="Байжан" />
+                        <TextField 
+                          label="Фамилия" 
+                          fullWidth 
+                          defaultValue="Байжан" 
+                          variant="outlined"
+                        />
                       </Grid>
                       <Grid item xs={12} sm={6} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
-                        <TextField label="Email" type="email" fullWidth defaultValue="gala@agrosense.ai" />
+                        <TextField 
+                          label="Email" 
+                          type="email" 
+                          fullWidth 
+                          defaultValue="gala@agrosense.ai" 
+                          variant="outlined"
+                        />
                       </Grid>
                       <Grid item xs={12} sm={6} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
-                        <TextField label="Телефон" fullWidth defaultValue="+7 701 000 45 67" />
+                        <TextField 
+                          label="Телефон" 
+                          fullWidth 
+                          defaultValue="+7 701 000 45 67" 
+                          variant="outlined"
+                        />
                       </Grid>
-                      <Grid item xs={12} sx={{ minWidth: 0, boxSizing: 'border-box' }}>
-                        <FormControl fullWidth>
-                          <InputLabel>Основной регион ответственности</InputLabel>
+                      <Grid item xs={12} sx={{ minWidth: 0, boxSizing: "border-box" }}>
+                        <FormControl fullWidth variant="outlined">
+                          <InputLabel id="region-select-label">Основной регион ответственности</InputLabel>
                           <Select
+                            labelId="region-select-label"
                             value={selectedRegion}
                             label="Основной регион ответственности"
                             onChange={(e) => setSelectedRegion(e.target.value)}
@@ -150,10 +217,12 @@ const AccountPage = () => {
                 </Stack>
               </CardContent>
             </Card>
+            </Grid>
           </Grid>
-        </Grid>
+        </Box>
 
-        <Grid container spacing={{ xs: 2.5, md: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Grid container spacing={{ xs: 2.5, md: 3 }} sx={{ maxWidth: '100%', width: '100%' }}>
           <Grid item xs={12} md={6}>
             <Card>
               <CardHeader title="Безопасность" />
@@ -187,6 +256,18 @@ const AccountPage = () => {
                       Сгенерировать новые
                     </Button>
                   </Stack>
+                  <Divider />
+                  <Box>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      fullWidth
+                      onClick={handleLogout}
+                      disabled={logoutLoading}
+                    >
+                      {logoutLoading ? "Выход..." : "Выйти из аккаунта"}
+                    </Button>
+                  </Box>
                 </Stack>
               </CardContent>
             </Card>
@@ -222,10 +303,12 @@ const AccountPage = () => {
                 </List>
               </CardContent>
             </Card>
+            </Grid>
           </Grid>
-        </Grid>
-      </Stack>
-    </Container>
+        </Box>
+        </Stack>
+      </Box>
+    </Box>
   );
 };
 

@@ -9,12 +9,18 @@ import {
   Badge,
   Box,
   Divider,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Drawer,
   IconButton,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Button,
+  TextField,
   Toolbar,
   Tooltip,
   Typography,
@@ -29,6 +35,8 @@ import SchoolIcon from "@mui/icons-material/School";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import SendIcon from "@mui/icons-material/Send";
 import AppLogo from "@/components/shared/AppLogo";
 
 const drawerWidth = 260;
@@ -49,6 +57,16 @@ const AppLayout = ({ children }: PropsWithChildren) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   // Десктопное меню по умолчанию открыто
   const [desktopOpen, setDesktopOpen] = useState(true);
+  type ChatMessage = { id: string; role: "user" | "assistant"; text: string };
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+    {
+      id: "m1",
+      role: "assistant",
+      text: "Здравствуйте! Я помогу с навигацией и вопросами по системе. Интеграция с ИИ будет позже.",
+    },
+  ]);
 
   const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
   const handleDesktopDrawerToggle = () => setDesktopOpen((prev) => !prev);
@@ -90,17 +108,29 @@ const AppLayout = ({ children }: PropsWithChildren) => {
           );
         })}
       </List>
-      <Box sx={{ px: 3, pb: 3 }}>
+      <Box sx={{ px: 3, pb: 3, display: "grid", gap: 1.25 }}>
         <Typography variant="subtitle2" color="text.secondary">
           Следующий спутниковый проход
         </Typography>
         <Typography variant="h6">через Неделю</Typography>
+        <Button
+          variant="contained"
+          startIcon={<ChatBubbleOutlineIcon />}
+          onClick={() => setChatOpen(true)}
+        >
+          Чатбот
+        </Button>
       </Box>
     </Box>
   );
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
+    <Box
+      sx={{
+        display: "flex",
+        bgcolor: "background.default",
+      }}
+    >
       <AppBar
         position="fixed"
         sx={{
@@ -112,7 +142,13 @@ const AppLayout = ({ children }: PropsWithChildren) => {
           backdropFilter: "blur(12px)",
         }}
       >
-        <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Toolbar 
+          sx={{ 
+            justifyContent: "space-between",
+            minHeight: { xs: "48px !important", sm: "64px" },
+            py: { xs: 0.5, sm: 1 }
+          }}
+        >
           <Stack direction="row" spacing={2} alignItems="center">
             <IconButton
               color="inherit"
@@ -128,7 +164,12 @@ const AppLayout = ({ children }: PropsWithChildren) => {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6">AgroSense AI</Typography>
+            <Typography 
+              variant="h6" 
+              sx={{ fontSize: { xs: "0.875rem", sm: "1.25rem" } }}
+            >
+              AgroSense AI
+            </Typography>
           </Stack>
           <Stack
             direction="row"
@@ -161,13 +202,24 @@ const AppLayout = ({ children }: PropsWithChildren) => {
                 },
               }}
             >
-              <Stack textAlign="right" spacing={0}>
+              <Stack 
+                textAlign="right" 
+                spacing={0}
+                sx={{ display: { xs: "none", sm: "flex" } }}
+              >
                 <Typography variant="subtitle2">Гала</Typography>
                 <Typography variant="caption" color="text.secondary">
                   Frontend Lead
                 </Typography>
               </Stack>
-              <Avatar alt="Gala" sx={{ width: 36, height: 36 }}>
+              <Avatar 
+                alt="Gala" 
+                sx={{ 
+                  width: { xs: 28, sm: 36 }, 
+                  height: { xs: 28, sm: 36 },
+                  fontSize: { xs: "0.75rem", sm: "1rem" }
+                }}
+              >
                 G
               </Avatar>
             </Stack>
@@ -210,13 +262,98 @@ const AppLayout = ({ children }: PropsWithChildren) => {
           flexGrow: 1,
           width: { md: desktopOpen ? `calc(100% - ${drawerWidth}px)` : "100%" },
           mt: { xs: 0, md: 10 },
-          px: { xs: 1.5, sm: 2.5, md: 4 },
-          py: { xs: 8, md: 6 },
+          px: { xs: "2vw", sm: 2, md: 4 },
+          py: { xs: "2vw", sm: 2, md: 6 },
         }}
       >
         <Toolbar sx={{ display: { xs: "block", md: "none" } }} />
         {children}
       </Box>
+
+      <Dialog
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Чат с ИИ (демо)</DialogTitle>
+        <DialogContent dividers>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 1.5,
+              maxHeight: 420,
+              overflowY: "auto",
+              pr: 1,
+            }}
+          >
+            {chatMessages.map((msg) => (
+              <Box
+                key={msg.id}
+                sx={{
+                  alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
+                  maxWidth: "85%",
+                  bgcolor: msg.role === "user" ? "primary.main" : "background.default",
+                  color: msg.role === "user" ? "primary.contrastText" : "text.primary",
+                  borderRadius: 2,
+                  px: 1.5,
+                  py: 1,
+                  boxShadow: "0 6px 18px rgba(15,23,42,0.12)",
+                }}
+              >
+                <Typography variant="body2">{msg.text}</Typography>
+              </Box>
+            ))}
+            {!chatMessages.length && (
+              <Typography variant="body2" color="text.secondary">
+                Напишите сообщение, чтобы начать диалог.
+              </Typography>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ alignItems: "center", gap: 1.5, px: 2.5, pb: 2 }}>
+          <TextField
+            fullWidth
+            size="small"
+            placeholder="Задайте вопрос..."
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                const text = chatInput.trim();
+                if (!text) return;
+                const userMessage: ChatMessage = { id: crypto.randomUUID(), role: "user", text };
+                const assistantDraft: ChatMessage = {
+                  id: crypto.randomUUID(),
+                  role: "assistant",
+                  text: "Демо-ответ. Подключение к ИИ добавим позже.",
+                };
+                setChatMessages((prev) => [...prev, userMessage, assistantDraft]);
+                setChatInput("");
+              }
+            }}
+          />
+          <IconButton
+            color="primary"
+            onClick={() => {
+              const text = chatInput.trim();
+              if (!text) return;
+              const userMessage: ChatMessage = { id: crypto.randomUUID(), role: "user", text };
+              const assistantDraft: ChatMessage = {
+                id: crypto.randomUUID(),
+                role: "assistant",
+                text: "Демо-ответ. Подключение к ИИ добавим позже.",
+              };
+              setChatMessages((prev) => [...prev, userMessage, assistantDraft]);
+              setChatInput("");
+            }}
+          >
+            <SendIcon />
+          </IconButton>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

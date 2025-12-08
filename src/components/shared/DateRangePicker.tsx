@@ -54,7 +54,7 @@ const DateRangePicker = ({ onPeriodChange, defaultPeriod = 30 }: DateRangePicker
           gap: 1,
           "& .MuiToggleButton-root": {
             borderColor: "rgba(148,163,184,0.3)",
-            borderRadius: 1,
+            borderRadius: { xs: 0.75, sm: 1 },
             flex: { xs: "1 1 calc(50% - 8px)", sm: "0 0 auto" },
             minHeight: 44,
           },

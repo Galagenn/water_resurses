@@ -68,29 +68,40 @@ const StatCard = ({ card }: StatCardProps) => {
           <Card
             sx={{
               height: "100%",
-              borderRadius: 1.5,
+              borderRadius: { xs: 1, sm: 1.25, md: 1.5 },
               border: "1px solid rgba(148,163,184,0.15)",
               background: "linear-gradient(135deg, rgba(15,23,42,0.9), rgba(15,23,42,0.7))",
             }}
           >
-            <CardContent>
-              <Stack spacing={1.25}>
+            <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+              <Stack spacing={{ xs: 0.75, sm: 1.25 }}>
                 <Stack
                   direction="row"
                   justifyContent="space-between"
                   alignItems="flex-start"
                   flexWrap="wrap"
-                  rowGap={1}
+                  rowGap={0.75}
                 >
-                  <Stack spacing={0.5}>
-                    <Typography color="text.secondary" variant="subtitle2">
+                  <Stack spacing={0.125}>
+                    <Typography 
+                      color="text.secondary" 
+                      variant="subtitle2"
+                      sx={{ fontSize: { xs: "0.65rem", sm: "0.875rem" } }}
+                    >
                       {card.label}
                     </Typography>
-                    <Typography variant="h4" sx={{ fontSize: { xs: "1.75rem", md: "2rem" } }}>
+                    <Typography variant="h4" sx={{ fontSize: { xs: "1.125rem", sm: "1.5rem", md: "2rem" } }}>
                       {card.value}
                     </Typography>
                   </Stack>
-                  <Typography fontSize={32} aria-hidden sx={{ lineHeight: 1 }}>
+                  <Typography 
+                    fontSize={32} 
+                    aria-hidden 
+                    sx={{ 
+                      lineHeight: 1,
+                      fontSize: { xs: "20px", sm: "28px", md: "32px" }
+                    }}
+                  >
                     {card.icon}
                   </Typography>
                 </Stack>

@@ -30,8 +30,8 @@ const riskColor: Record<RegionPerformanceRow["riskLevel"], string> = {
 
 const RegionPerformanceTable = ({ rows, onAddTask }: Props) => (
   <Card>
-    <CardContent>
-      <Typography variant="h6" gutterBottom>
+    <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+      <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: "0.875rem", sm: "1.25rem" }, mb: { xs: 1, sm: 1.5 } }}>
         Эффективность по регионам
       </Typography>
       <TableContainer sx={{ overflowX: "auto" }}>

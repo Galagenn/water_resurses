@@ -8,7 +8,11 @@ type Props = {
 };
 
 const NotificationsPanel = ({ feed }: Props) => (
-  <Card>
+  <Card
+    sx={{
+      borderRadius: { xs: 1, sm: 1.5, md: 2 },
+    }}
+  >
     <CardContent>
       <Stack spacing={2}>
         <Stack
@@ -27,15 +31,15 @@ const NotificationsPanel = ({ feed }: Props) => (
           </Button>
         </Stack>
         {feed.map((item) => (
-          <Stack
-            key={item.id}
-            spacing={0.5}
-            sx={{
-              border: "1px solid rgba(148,163,184,0.15)",
-              borderRadius: 2,
-              p: 1.5,
-            }}
-          >
+            <Stack
+              key={item.id}
+              spacing={0.5}
+              sx={{
+                border: "1px solid rgba(148,163,184,0.15)",
+                borderRadius: { xs: 1, sm: 1.5, md: 2 },
+                p: 1.5,
+              }}
+            >
             <Stack
               direction={{ xs: "column", sm: "row" }}
               justifyContent="space-between"

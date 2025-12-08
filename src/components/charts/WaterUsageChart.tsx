@@ -30,8 +30,17 @@ const WaterUsageChart = ({ data, visibleRegions }: Props) => {
         border: "1px solid rgba(148,163,184,0.25)",
       }}
     >
-      <CardContent sx={{ height: { xs: 280, sm: 320, md: 360 }, display: "flex", flexDirection: "column", gap: 2 }}>
-        <Typography variant="h6">Потребление воды (млн м³)</Typography>
+      <CardContent
+        sx={{
+          height: { xs: 220, sm: 300, md: 360 },
+          display: "flex",
+          flexDirection: "column",
+          gap: { xs: 0.75, sm: 2 },
+          p: { xs: 1, sm: 2 },
+          pl: { xs: 1.25, sm: 2.25 }, // небольшой дополнительный отступ слева
+        }}
+      >
+        <Typography variant="h6" sx={{ fontSize: { xs: "0.8rem", sm: "1.25rem" } }}>Потребление воды (млн м³)</Typography>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 20 }}>
             <CartesianGrid stroke="rgba(148,163,184,0.2)" strokeDasharray="4 4" />
@@ -67,7 +76,7 @@ const WaterUsageChart = ({ data, visibleRegions }: Props) => {
                 stroke={REGION_META[key].color}
                 strokeWidth={2.5}
                 dot={{ r: 3 }}
-                activeDot={{ r: 5 }}
+                activeDot={{ r: 5, fill: REGION_META[key].color, stroke: 'none' }}
                 name={REGION_META[key].label}
               />
             ))}
