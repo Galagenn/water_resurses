@@ -28,12 +28,13 @@ type Props = {
 };
 
 type LayerKey = "crops" | "irrigation" | "anomalies";
+type MapFeature = MapFeatureCollection["features"][number];
 
 const DEFAULT_LAYERS: LayerKey[] = ["crops", "irrigation", "anomalies"];
 
 const filterByRegions = (collection: MapFeatureCollection, regions: RegionKey[]) => ({
   ...collection,
-  features: collection.features.filter((feature) => {
+  features: collection.features.filter((feature: MapFeature) => {
     const region = feature.properties?.region as RegionKey | undefined;
     return !region || regions.includes(region);
   }),
