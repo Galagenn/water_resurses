@@ -25,6 +25,7 @@ import {
   Tooltip,
   Typography,
   Stack,
+  Fab,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
@@ -270,6 +271,23 @@ const AppLayout = ({ children }: PropsWithChildren) => {
         {children}
       </Box>
 
+      <Tooltip title="Чат с ИИ">
+        <Fab
+          color="primary"
+          aria-label="chat"
+          onClick={() => setChatOpen(true)}
+          sx={{
+            position: "fixed",
+            bottom: { xs: 20, sm: 28 },
+            right: { xs: 20, sm: 28 },
+            boxShadow: 6,
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+          }}
+        >
+          <ChatBubbleOutlineIcon />
+        </Fab>
+      </Tooltip>
+
       <Dialog
         open={chatOpen}
         onClose={() => setChatOpen(false)}
@@ -296,7 +314,7 @@ const AppLayout = ({ children }: PropsWithChildren) => {
                   maxWidth: "85%",
                   bgcolor: msg.role === "user" ? "primary.main" : "background.default",
                   color: msg.role === "user" ? "primary.contrastText" : "text.primary",
-                  borderRadius: 2,
+                  borderRadius: 1,
                   px: 1.5,
                   py: 1,
                   boxShadow: "0 6px 18px rgba(15,23,42,0.12)",

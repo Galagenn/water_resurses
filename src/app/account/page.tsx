@@ -110,7 +110,7 @@ const AccountPage = () => {
                     <Avatar sx={{ width: 64, height: 64, fontSize: 28 }}>G</Avatar>
                     <Stack spacing={0.5}>
                       <Typography variant="h6">Гала</Typography>
-                      <Stack direction="row" spacing={1} flexWrap="wrap">
+                      <Stack direction="row" spacing={1} flexWrap="wrap" rowGap={1} columnGap={1}>
                         {roles.map((role) => (
                           <Chip key={role} label={role} size="small" color="success" variant="outlined" />
                         ))}
